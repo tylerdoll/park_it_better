@@ -5,7 +5,7 @@ services:
         volumes:
           - ./api:/api
         working_dir: /api
-        command: python src/app.py
+        command: python -u api/app.py
         ports:
           - "5000:5000"
 

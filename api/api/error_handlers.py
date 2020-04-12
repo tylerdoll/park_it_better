@@ -1,6 +1,8 @@
+# std
 import logging
 import traceback
 
+# 3rd party
 from selenium.common.exceptions import WebDriverException
 
 

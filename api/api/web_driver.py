@@ -7,7 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 # local
-from expected_conditions import element_has_css_class
+from api.expected_conditions import element_has_css_class
 
 _FORM_URL = (
     "https://www.parkitrightpermit.com/park-it-right-contact-visitor-permit-request/"

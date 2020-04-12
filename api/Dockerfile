@@ -1,14 +1,15 @@
-FROM python:3.9.0a5-alpine3.10
+FROM python:3.8.2-alpine3.10
 
 RUN mkdir /app
 WORKDIR /app
 
 # Install dependencies
 COPY requirements.txt .
-RUN apk add --no-cache --update gcc chromium chromium-chromedriver && \
+RUN apk add --no-cache --update musl-dev gcc chromium chromium-chromedriver && \
     pip3 install --no-cache-dir -r requirements.txt
 
-# Copy builds
-COPY src .
+COPY setup.py .
+COPY api ./api
+RUN pip install -e .
 
-CMD ["python", "app.py"]
+CMD ["python", "api/app.py"]
