@@ -1,0 +1,4 @@
+flask==1.1.1
+flask-cors==3.0.8
+selenium==3.141.0
+urllib3==1.25.8

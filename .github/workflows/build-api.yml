@@ -1,0 +1,58 @@
+name: build-api
+
+on:
+  push:
+    branches: 'master'
+    tags: '*'
+    paths:
+      - '.github/workflows/build-api.yml'
+      - 'api/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./api
+
+    steps:
+      -
+        name: Prepare
+        id: prepare
+        run: |
+          echo ::set-output name=build_date::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          echo ::set-output name=docker_platforms::linux/amd64,linux/arm/v7
+          echo ::set-output name=docker_username::tylerdoll
+          echo ::set-output name=docker_image::tylerdoll/park_it_better_api
+      -
+        # https://github.com/crazy-max/ghaction-docker-buildx
+        name: Set up Docker Buildx
+        uses: crazy-max/ghaction-docker-buildx@v1
+        with:
+          version: latest
+      -
+        # https://github.com/actions/checkout
+        name: Checkout
+        uses: actions/checkout@v1
+      -
+        name: Docker Login
+        if: success()
+        env:
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          echo "${DOCKER_PASSWORD}" | docker login --username "${{ steps.prepare.outputs.docker_username }}" --password-stdin
+      -
+        name: Docker Buildx
+        if: success()
+        working-directory: ${{env.working-directory}}
+        run: |
+          docker buildx build --platform ${{ steps.prepare.outputs.docker_platforms }} \
+            --output "type=image,push=true" \
+            --build-arg "BUILD_DATE=${{ steps.prepare.outputs.build_date }}" \
+            --build-arg "VCS_REF=${GITHUB_SHA::8}" \
+            --tag "${{ steps.prepare.outputs.docker_image }}:latest" \
+            --file Dockerfile .
+      -
+        name: Clear
+        if: always()
+        run: |
+          rm -f ${HOME}/.docker/config.json

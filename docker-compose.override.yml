@@ -1,0 +1,21 @@
+version: '3'
+services:
+    api:
+        build: api
+        volumes:
+          - ./api:/api
+        working_dir: /api
+        command: python src/app.py
+        ports:
+          - "5000:5000"
+
+    ui:
+        build: ui
+        volumes:
+          - ./ui:/ui
+        working_dir: /ui
+        command: "npm start"
+        ports:
+          - "3000:3000"
+        environment:
+          - CI=true

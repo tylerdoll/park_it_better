@@ -1,0 +1,6 @@
+version: '3'
+services:
+    api:
+        image: tylerdoll/park_it_better_api
+    ui:
+        image: tylerdoll/park_it_better_ui
