@@ -15,6 +15,7 @@ def handle_ioerror(func):
 
     return inner
 
+
 def handle_selenium_errors(func):
     def inner(*args, **kwargs):
         try:

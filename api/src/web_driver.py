@@ -91,6 +91,7 @@ def _validate_visitor(visitor):
     if not set(visitor.keys()).issubset(_VISITOR_FIELDS):
         raise KeyError
 
+
 def _fill_form_inputs(driver, inputs):
     for k, v in inputs.items():
         driver.find_element_by_name(k).send_keys(v)

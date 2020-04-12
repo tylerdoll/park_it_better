@@ -56,6 +56,7 @@ def _load_visitor_json(path):
     with open(path) as f:
         return json.load(f)
 
+
 def _save_visitor_json(visitor):
     path = (
         _VISITORS_PATH
