@@ -100,7 +100,7 @@ def _fill_form_inputs(driver, inputs):
 def _check_for_invalid_response(driver):
     timeout_s = 3
     wait = WebDriverWait(driver, timeout_s)
-    form_invalid = wait.until(
+    wait.until(
         element_has_css_class((By.XPATH, _FORM_XPATH), [_FORM_INVALID_CSS_CLASS])
     )
     return driver.find_element_by_class_name(_FORM_RESPONSE_ELEM_CLASS).text

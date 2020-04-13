@@ -2,7 +2,6 @@
 import logging
 import json
 import pathlib
-import time
 
 # 3rd party
 from flask import Flask, jsonify, request
