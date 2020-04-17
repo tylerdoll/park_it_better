@@ -1,7 +1,7 @@
 FROM python:3.8.2-alpine3.10
 
-RUN mkdir /app
-WORKDIR /app
+RUN mkdir /api
+WORKDIR /api
 
 # Install dependencies
 COPY requirements.txt .
