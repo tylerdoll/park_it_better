@@ -8,6 +8,8 @@ services:
         command: python -u api/app.py
         ports:
           - "5000:5000"
+        environment:
+          - FLASK_ENV=development
 
     ui:
         build: ui
