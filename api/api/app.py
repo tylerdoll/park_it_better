@@ -1,45 +1,85 @@
 # std
+from bson.json_util import ObjectId
 import logging
 import json
 import pathlib
+import uuid
 
 # 3rd party
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+import pymongo as pm
 
 # local
-from api.error_handlers import handle_ioerror, handle_selenium_errors
+from api.error_handlers import (
+    handle_io_error,
+    handle_runtime_error,
+    handle_selenium_errors,
+)
+from api.formats import format_visitor
 from api.web_driver import create_driver, submit_visitor_info
 
+# Init Flask app
 APP = Flask(__name__)
-APP.register_error_handler(500, handle_selenium_errors)
-APP.register_error_handler(500, handle_ioerror)
 CORS(APP)
 
-_THIS_FILE_PATH = pathlib.Path(__file__).resolve()
-APP.config["VISITORS_PATH"] = _THIS_FILE_PATH.parents[0].joinpath("visitors")
+# Error handling
+APP.register_error_handler(500, handle_io_error)
+APP.register_error_handler(500, handle_runtime_error)
+APP.register_error_handler(500, handle_selenium_errors)
+
+# Configure Database
+APP.config["DB"] = pm.MongoClient("db")
 
 
-@APP.route("/visitors")
-def get_visitors():
-    logging.debug(f"Visitors path: {APP.config['VISITORS_PATH']}")
-    visitor_files = sorted([v for v in APP.config["VISITORS_PATH"].glob("*.json")])
-    visitors = [_load_visitor_json(v) for v in visitor_files]
-    return jsonify(visitors)
+def get_db():
+    return APP.config["DB"].parking
 
 
 @APP.route("/visitors", methods=["POST"])
 def post_visitors():
+    db = get_db()
     visitor = request.json
-    logging.debug(visitor)
-    _save_visitor_json(visitor)
-    return visitor, 201
+    visitor_id = db.visitors.insert_one(visitor).inserted_id
+    return str(visitor_id), 201
+
+
+@APP.route("/visitors")
+def get_visitors():
+    db = get_db()
+    visitors = [format_visitor(v) for v in db.visitors.find()]
+    return jsonify(visitors)
+
+
+# Update
+@APP.route("/visitors/<visitor_id>", methods=["PUT"])
+def put_visitors(visitor_id):
+    db = get_db()
+    update = {"$set": request.json}
+    result = db.visitors.update_one({"_id": ObjectId(visitor_id)}, update)
+    if result.matched_count == 0:
+        return "", 404
+    if result.modified_count == 1:
+        return "", 200
+
+
+# Delete
+@APP.route("/visitors/<visitor_id>", methods=["DELETE"])
+def delete_visitors(visitor_id):
+    db = get_db()
+    result = db.visitors.delete_one({"_id": ObjectId(visitor_id)})
+    status_code = 404 if result.deleted_count == 0 else 200
+    return "", status_code
 
 
 @APP.route("/submit_visitors", methods=["POST"])
 def post_submit_form():
+    db = get_db()
+    resident = db.resident.findOne()
+    if not resident:
+        raise RuntimeError("Could not find resident")
+
     driver = create_driver()
-    resident = APP.config["VISITORS_PATH"] / "resident.json"
     visitors = request.json
 
     responses = []
@@ -52,18 +92,5 @@ def post_submit_form():
     return jsonify(responses)
 
 
-def _load_visitor_json(path):
-    with open(path) as f:
-        return json.load(f)
-
-
-def _save_visitor_json(visitor):
-    fname = f"{visitor['visitor-first-name']}-{visitor['visitor-last-name']}.json"
-    path = APP.config["VISITORS_PATH"] / fname
-    with open(path, "w") as f:
-        json.dump(visitor, f, indent=4)
-        logging.info(f"Saved visitor to {path}")
-
-
 if __name__ == "__main__":
-    APP.run(host="0.0.0.0", debug=True)
+    APP.run(host="0.0.0.0")
