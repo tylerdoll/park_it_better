@@ -1,4 +1,4 @@
-import {CLEAR_SUBMISSION, RECEIVE_VISITORS, TOGGLE_VISITOR_FOR_SUBMIT, SAVING_VISITOR, SAVED_VISITOR, POSTING_VISITORS_FOR_PERMIT, POSTED_VISITORS_FOR_PERMIT, SET_VISITOR_FORM_INITIAL_VALUES} from '../actions';
+import {CLEAR_SUBMISSION, RECEIVE_VISITORS, TOGGLE_VISITOR_FOR_SUBMIT, SAVING_VISITOR, SAVED_VISITOR, POSTING_VISITORS_FOR_PERMIT, POSTED_VISITORS_FOR_PERMIT, SET_VISITOR_FORM_INITIAL_VALUES, SET_TAB_INDEX} from '../actions';
 
 const initialState = {
   allVisitors: [],
@@ -6,6 +6,7 @@ const initialState = {
   results: [],
   savingVisitor: false,
   visitorFormInitialValues: {},
+  tabIndex: 0,
 };
 
 export default function(state = initialState, action) {
@@ -70,6 +71,13 @@ export default function(state = initialState, action) {
       return {
         ...state,
         visitorFormInitialValues: values,
+      };
+
+    case SET_TAB_INDEX:
+      const {tabIndex} = action.payload;
+      return {
+          ...state,
+          tabIndex,
       };
 
     default:

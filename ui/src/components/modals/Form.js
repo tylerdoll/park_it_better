@@ -1,9 +1,10 @@
 import React from 'react';
+import {connect} from 'react-redux';
 import {SlideIn, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody} from '@chakra-ui/core';
 import SaveVisitorForm from '../forms/SaveVisitor';
 
-const SaveVisitorModal = (props) => {
-  const {isOpen, onClose, btnRef} = props;
+const FormModal = (props) => {
+  const {isOpen, onClose, btnRef, initalValues} = props;
 
   return (
     <SlideIn in={isOpen}>
@@ -11,10 +12,10 @@ const SaveVisitorModal = (props) => {
         <Modal finalFocusRef={btnRef} onClose={onClose} isOpen={true}>
           <ModalOverlay opacity={styles.opacity} />
           <ModalContent pb={5} {...styles} rounded="md">
-            <ModalHeader>New visitor</ModalHeader>
+            <ModalHeader>Edit Visitor</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <SaveVisitorForm onClose={onClose}/>
+              <SaveVisitorForm onClose={onClose} initalValues={initalValues}/>
             </ModalBody>
           </ModalContent>
         </Modal>
@@ -23,4 +24,8 @@ const SaveVisitorModal = (props) => {
   );
 };
 
-export default SaveVisitorModal;
+const mapStateToProps = (state) => ({
+  initalValues: state.visitors.visitorFormInitialValues,
+});
+
+export default connect(mapStateToProps, null)(FormModal);

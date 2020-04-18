@@ -12,6 +12,17 @@ export const submitVisitors = (visitors) => ({
   payload: {visitors},
 });
 
+export const REQUEST_RESIDENTS = 'REQUEST_RESIDENTS';
+export const requestResidents = () => ({
+  type: REQUEST_RESIDENTS,
+});
+
+export const RECEIVE_RESIDENTS = 'RECEIVE_RESIDENTS';
+export const receiveResidents = (json) => ({
+  type: RECEIVE_RESIDENTS,
+  payload: {json},
+});
+
 export const REQUEST_VISITORS = 'REQUEST_VISITORS';
 export const requestVisitors = () => ({
   type: REQUEST_VISITORS,
@@ -21,6 +32,16 @@ export const RECEIVE_VISITORS = 'RECEIVE_VISITORS';
 export const receiveVisitors = (json) => ({
   type: RECEIVE_VISITORS,
   payload: {json},
+});
+
+export const SAVING_RESIDENT = 'SAVING_RESIDENT';
+export const savingResident = () => ({
+  type: SAVING_RESIDENT,
+});
+
+export const SAVED_RESIDENT = 'SAVED_RESIDENT';
+export const savedResident = () => ({
+  type: SAVED_RESIDENT,
 });
 
 export const SAVING_VISITOR = 'SAVING_VISITOR';
@@ -55,28 +76,71 @@ export const setVisitorFormInitialValues = (values) => ({
   payload: {values},
 });
 
+export const SET_TAB_INDEX = "SET_TAB_INDEX";
+export const setTabIndex = (tabIndex) => ({
+    type: SET_TAB_INDEX,
+    payload: {tabIndex},
+});
+
+export const saveResident = (resident, onComplete) => (dispatch) => {
+  dispatch(savingVisitor());
+  if (resident["_id"]) {
+      put('/residents/' + resident["_id"],
+          resident,
+          (resp) => {
+            dispatch(savedResident());
+            dispatch(fetchResidents());
+          },
+          (e) => console.error('Could not save resident', e),
+      ).then(onComplete);
+  }
+  else {
+      post('/residents',
+          resident,
+          (resp) => {
+            dispatch(savingResident());
+            dispatch(fetchResidents());
+          },
+          (e) => console.error('Could not save resident', e),
+      ).then(onComplete);
+  }
+};
+
 export const saveVisitor = (visitor, onComplete) => (dispatch) => {
   dispatch(savingVisitor());
+
+  const onSuccess = (resp) => {
+    dispatch(savedVisitor());
+    dispatch(setTabIndex(0));
+    dispatch(fetchVisitors());
+  };
+
+  const onError = (e) => console.error('Could not save visitor', e);
+
   if (visitor["_id"]) {
       put('/visitors/' + visitor["_id"],
           visitor,
-          (resp) => {
-            dispatch(savedVisitor());
-            dispatch(fetchVisitors());
-          },
-          (e) => console.error('Could not save visitor', e),
+          onSuccess,
+          onError, 
       ).then(onComplete);
   }
   else {
       post('/visitors',
           visitor,
-          (resp) => {
-            dispatch(savedVisitor());
-            dispatch(fetchVisitors());
-          },
-          (e) => console.error('Could not save visitor', e),
+          onSuccess,
+          onError, 
       ).then(onComplete);
   }
+};
+
+export const fetchResidents = () => (dispatch) => {
+  dispatch(requestResidents());
+  get('/residents',
+      (json) => {
+        dispatch(receiveResidents(json)); console.log('Got residents', json);
+      },
+      (e) => console.error('Could not get residents', e),
+  );
 };
 
 export const fetchVisitors = () => (dispatch) => {
