@@ -41,7 +41,7 @@ def post_visitors():
     db = get_db()
     visitor = request.json
     visitor_id = db.visitors.insert_one(visitor).inserted_id
-    return str(visitor_id), 201
+    return jsonify({"_id": str(visitor_id)}), 201
 
 
 @APP.route("/visitors")
