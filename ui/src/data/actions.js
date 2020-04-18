@@ -1,4 +1,4 @@
-import {get, post} from '../API';
+import {get, post, put} from '../API';
 
 export const TOGGLE_VISITOR_FOR_SUBMIT = 'TOGGLE_VISITOR_FOR_SUBMIT';
 export const toggleForSubmit = (id) => ({
@@ -57,14 +57,26 @@ export const setVisitorFormInitialValues = (values) => ({
 
 export const saveVisitor = (visitor, onComplete) => (dispatch) => {
   dispatch(savingVisitor());
-  post('/visitors',
-      visitor,
-      (resp) => {
-        dispatch(savedVisitor());
-        dispatch(fetchVisitors());
-      },
-      (e) => console.error('Could not save visitor', e),
-  ).then(onComplete);
+  if (visitor["_id"]) {
+      put('/visitors/' + visitor["_id"],
+          visitor,
+          (resp) => {
+            dispatch(savedVisitor());
+            dispatch(fetchVisitors());
+          },
+          (e) => console.error('Could not save visitor', e),
+      ).then(onComplete);
+  }
+  else {
+      post('/visitors',
+          visitor,
+          (resp) => {
+            dispatch(savedVisitor());
+            dispatch(fetchVisitors());
+          },
+          (e) => console.error('Could not save visitor', e),
+      ).then(onComplete);
+  }
 };
 
 export const fetchVisitors = () => (dispatch) => {

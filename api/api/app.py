@@ -41,7 +41,7 @@ def post_visitors():
     db = get_db()
     visitor = request.json
     visitor_id = db.visitors.insert_one(visitor).inserted_id
-    return jsonify({"_id": str(visitor_id)}), 201
+    return "", 201
 
 
 @APP.route("/visitors")
@@ -66,6 +66,7 @@ def put_visitors(visitor_id):
         return "", 404
     if result.modified_count == 1:
         return "", 200
+    return "", 500
 
 
 # Delete
