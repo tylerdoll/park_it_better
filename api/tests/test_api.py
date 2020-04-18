@@ -93,6 +93,10 @@ def test_update_visitor(client):
     assert resp.status_code == 200
     assert db.visitors.find_one({"_id": visitor["_id"]})["visitor-color"] == "black"
 
+    visitor["_id"] = str(visitor["_id"])
+    resp = client.put(f"/visitors/{visitor_id}", json=visitor)
+    assert resp.status_code == 200
+
     resp = client.put(f"/visitors/{ObjectId()}", json={"visitor-color": "black"})
     assert resp.status_code == 404
 

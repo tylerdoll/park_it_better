@@ -55,7 +55,12 @@ def get_visitors():
 @APP.route("/visitors/<visitor_id>", methods=["PUT"])
 def put_visitors(visitor_id):
     db = get_db()
-    update = {"$set": request.json}
+
+    data = request.json
+    if "_id" in data:
+        data.pop("_id")
+    update = {"$set": data}
+
     result = db.visitors.update_one({"_id": ObjectId(visitor_id)}, update)
     if result.matched_count == 0:
         return "", 404
