@@ -107,31 +107,13 @@ const SaveVisitorForm = (props) => {
 const mapStateToProps = (state) => ({
   savingVisitor: state.visitors.savingVisitor,
   mode: state.visitors.visitorFormMode,
+  initalValues: state.visitors.visitorFormInitialValues,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onFormSubmit: (visitor) => dispatch(saveVisitor(visitor, ownProps.onClose)),
   };
-};
-
-SaveVisitorForm.defaultProps = {
-    initalValues: {
-      'visitor-first-name': '',
-      'visitor-last-name': '',
-      'visitor-phone': '',
-      'visitor-year': '',
-      'visitor-make': '',
-      'visitor-model': '',
-      'visitor-color': '',
-      'visitor-license-plate-number': '',
-      'visitor-state-of-issuance': '',
-      'visitor-email': 'email@address.com',
-      'visitor-address': 'n/a',
-      'visitor-apt-number': 'n/a',
-      'visitor-city': 'n/a',
-      'visitor-zip': 'n/a',
-    },
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SaveVisitorForm);

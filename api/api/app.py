@@ -16,7 +16,7 @@ from api.error_handlers import (
     handle_runtime_error,
     handle_selenium_errors,
 )
-from api.formats import format_visitor
+from api.formats import format_record
 from api.web_driver import create_driver, submit_visitor_info
 
 # Init Flask app
@@ -47,7 +47,7 @@ def post_visitors():
 @APP.route("/visitors")
 def get_visitors():
     db = get_db()
-    visitors = [format_visitor(v) for v in db.visitors.find()]
+    visitors = [format_record(v) for v in db.visitors.find()]
     return jsonify(visitors)
 
 
@@ -81,7 +81,7 @@ def delete_visitors(visitor_id):
 @APP.route("/submit_visitors", methods=["POST"])
 def post_submit_form():
     db = get_db()
-    resident = db.resident.findOne()
+    resident = db.resident.find_one(projection={"_id": False})
     if not resident:
         raise RuntimeError("Could not find resident")
 
@@ -90,13 +90,40 @@ def post_submit_form():
 
     responses = []
     for visitor in visitors:
-        logging.info(f"Submitting parking info for {visitor['visitor-first-name']}")
+        if "_id" in visitor:
+            visitor.pop("_id")
+        logging.info(f"Submitting parking info for {visitor}")
         response = submit_visitor_info(driver, resident, visitor)
         responses.append(response)
         logging.debug(response)
 
     return jsonify(responses)
 
+
+@APP.route("/resident", methods=["POST"])
+def post_resident():
+    db = get_db()
+
+    resident = request.json
+    if "_id" in resident:
+        resident.pop("_id")
+
+    result = db.resident.replace_one({}, resident, upsert=True)
+    if result.matched_count == 0:
+        return "", 201
+    if result.modified_count == 1:
+        return "", 200
+    return "", 500
+
+
+@APP.route("/resident")
+def get_resident():
+    db = get_db()
+    resident = db.resident.find_one()
+    if resident is None:
+        return "", 404
+    else:
+        return jsonify(format_record(resident))
 
 if __name__ == "__main__":
     APP.run(host="0.0.0.0")

@@ -6,8 +6,9 @@ import {saveResident} from '../../data/actions';
 
 const SaveResidentForm = (props) => {
   const {onFormSubmit, savingResident, initalValues} = props;
+    console.log("initalValues", initalValues)
   return (
-    <Formik initialValues={initalValues} onSubmit={(vals, actions) => onFormSubmit(vals)}>
+    <Formik enableReinitialize initialValues={initalValues} onSubmit={(vals, actions) => onFormSubmit(vals)}>
       {(props) => (
         <Form>
           <SimpleGrid columns={{sm: 1, md: 2}} spacing={4}>
@@ -92,14 +93,13 @@ const SaveResidentForm = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  savingResident: state.visitors.savingVisitor,
-  initalValues: state.visitors.visitorFormInitialValues,
-  mode: state.visitors.visitorFormMode,
+  savingResident: state.visitors.savingResident,
+  initalValues: state.visitors.resident,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onFormSubmit: (visitor) => dispatch(saveResident(visitor, ownProps.onClose)),
+    onFormSubmit: (resident) => dispatch(saveResident(resident, ownProps.onClose)),
   };
 };
 

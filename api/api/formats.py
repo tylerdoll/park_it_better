@@ -1,12 +1,12 @@
 from bson.json_util import dumps
 from json import loads
 
-def format_visitor(mongo_visitor):
+def format_record(mongo_record):
     # Convert to a python dict
-    visitor = dumps(mongo_visitor)
-    visitor = loads(visitor)
+    record = dumps(mongo_record)
+    record = loads(record)
 
     # Flatten _id field to a string
-    visitor["_id"] = visitor["_id"]["$oid"]
+    record["_id"] = record["_id"]["$oid"]
 
-    return visitor
+    return record

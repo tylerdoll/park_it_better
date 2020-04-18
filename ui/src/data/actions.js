@@ -12,15 +12,15 @@ export const submitVisitors = (visitors) => ({
   payload: {visitors},
 });
 
-export const REQUEST_RESIDENTS = 'REQUEST_RESIDENTS';
-export const requestResidents = () => ({
-  type: REQUEST_RESIDENTS,
+export const REQUEST_RESIDENT = 'REQUEST_RESIDENT';
+export const requestResident = () => ({
+  type: REQUEST_RESIDENT,
 });
 
-export const RECEIVE_RESIDENTS = 'RECEIVE_RESIDENTS';
-export const receiveResidents = (json) => ({
-  type: RECEIVE_RESIDENTS,
-  payload: {json},
+export const RECEIVE_RESIDENT = 'RECEIVE_RESIDENT';
+export const receiveResident = (resident) => ({
+  type: RECEIVE_RESIDENT,
+  payload: {resident},
 });
 
 export const REQUEST_VISITORS = 'REQUEST_VISITORS';
@@ -83,27 +83,15 @@ export const setTabIndex = (tabIndex) => ({
 });
 
 export const saveResident = (resident, onComplete) => (dispatch) => {
-  dispatch(savingVisitor());
-  if (resident["_id"]) {
-      put('/residents/' + resident["_id"],
-          resident,
-          (resp) => {
-            dispatch(savedResident());
-            dispatch(fetchResidents());
-          },
-          (e) => console.error('Could not save resident', e),
-      ).then(onComplete);
-  }
-  else {
-      post('/residents',
-          resident,
-          (resp) => {
-            dispatch(savingResident());
-            dispatch(fetchResidents());
-          },
-          (e) => console.error('Could not save resident', e),
-      ).then(onComplete);
-  }
+  dispatch(savingResident());
+  post('/resident',
+      resident,
+      (resp) => {
+        dispatch(savedResident());
+        dispatch(fetchResident());
+      },
+      (e) => console.error('Could not save resident', e),
+  ).then(onComplete);
 };
 
 export const saveVisitor = (visitor, onComplete) => (dispatch) => {
@@ -133,24 +121,29 @@ export const saveVisitor = (visitor, onComplete) => (dispatch) => {
   }
 };
 
-export const fetchResidents = () => (dispatch) => {
-  dispatch(requestResidents());
-  get('/residents',
-      (json) => {
-        dispatch(receiveResidents(json)); console.log('Got residents', json);
-      },
-      (e) => console.error('Could not get residents', e),
-  );
+export const fetchResident = () => (dispatch) => {
+  dispatch(requestResident());
+  get('/resident',
+      (response) => response.json(),
+      (e) => console.error('Could not get resident', e),
+  )
+  .then((json) => {
+      console.log('Got resident', json);
+      dispatch(receiveResident(json)); 
+   });
 };
 
 export const fetchVisitors = () => (dispatch) => {
   dispatch(requestVisitors());
+
   get('/visitors',
-      (json) => {
-        dispatch(receiveVisitors(json)); console.log('Got visitors', json);
-      },
+      (response) => response.json(),
       (e) => console.error('Could not get visitors', e),
-  );
+  )
+  .then((json) => {
+      console.log("Got visitors", json);
+      dispatch(receiveVisitors(json));
+  });
 };
 
 export const postVisitorsForPermit = (visitors) => (dispatch) => {
@@ -158,7 +151,7 @@ export const postVisitorsForPermit = (visitors) => (dispatch) => {
   post('/submit_visitors',
       visitors,
       (results) => {
-        dispatch(postedVisitorsForPermit(results));
+        dispatch(postedVisitorsForPermit(results.json()));
       },
       (e) => console.error('Could not post visitors for permit', e),
   );

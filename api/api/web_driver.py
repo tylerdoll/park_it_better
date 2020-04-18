@@ -59,9 +59,9 @@ def create_driver():
 
 def submit_visitor_info(driver, resident, visitor):
     if not set(resident.keys()).issubset(_RESIDENT_FIELDS):
-        raise KeyError
+        raise KeyError(f"Missing fields\nwhat provided {resident.keys()}\nwhat was expected: {_RESIDENT_FIELDS}")
     if not set(visitor.keys()).issubset(_VISITOR_FIELDS):
-        raise KeyError
+        raise KeyError(f"Missing fields\nwhat provided {visitor.keys()}\nwhat was expected: {_VISITOR_FIELDS}")
 
     def create_response(succeeded, response):
         return {"visitor": visitor, "succeeded": succeeded, "response": response}
@@ -85,11 +85,6 @@ def submit_visitor_info(driver, resident, visitor):
         response_output = "Permit submitted"
     finally:
         return create_response(succeeded, response_output)
-
-
-def _validate_visitor(visitor):
-    if not set(visitor.keys()).issubset(_VISITOR_FIELDS):
-        raise KeyError
 
 
 def _fill_form_inputs(driver, inputs):

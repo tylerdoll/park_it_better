@@ -15,7 +15,7 @@ const FormModal = (props) => {
             <ModalHeader>Edit Visitor</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <SaveVisitorForm onClose={onClose} initalValues={initalValues}/>
+              <SaveVisitorForm onClose={onClose} />
             </ModalBody>
           </ModalContent>
         </Modal>

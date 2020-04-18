@@ -18,6 +18,19 @@ def client(tmpdir):
         yield client
 
 
+def create_dummy_resident():
+    return {
+        "property-name": "Water",
+        "first-name-of-resident": "Elon",
+        "last-name-of-resident": "Musk",
+        "resident-address": "1 St. Mars",
+        "resident-apartment": 1337,
+        "resident-city": "Doom",
+        "resident-state": "Mars",
+        "resident-zip": 9001,
+    }
+
+
 def create_dummy_visitor(first="mark", last="jones"):
     return {
         "visitor-address": "n/a",
@@ -37,9 +50,43 @@ def create_dummy_visitor(first="mark", last="jones"):
     }
 
 
-def compare_visitor(mongo_visitor, visitor):
-    mongo_visitor["_id"] = str(mongo_visitor["_id"])
-    assert mongo_visitor == visitor
+def compare_record(record, data):
+    record["_id"] = str(record["_id"])
+    assert record == data
+
+
+def test_save_resident(client):
+    db = get_db()
+
+    resident = create_dummy_resident()
+    resp = client.post("/resident", json=resident)
+    assert resp.status_code == 201
+    assert db.resident.count_documents({}) == 1
+
+
+def test_get_resident(client):
+    db = get_db()
+
+    resident = create_dummy_resident()
+    db.resident.insert_one(resident)
+
+    resp = client.get("/resident")
+    assert resp.status_code == 200
+    compare_record(resident, resp.get_json())
+
+
+def test_update_resident(client):
+    db = get_db()
+
+    resident = create_dummy_resident()
+    db.resident.insert_one(resident)
+
+    assert db.resident.find_one({"_id": resident["_id"]})["property-name"] == "Water"
+    resident["property-name"] = "Aspen"
+    resident["_id"] = str(resident["_id"])
+    resp = client.post("/resident", json=resident)
+    assert resp.status_code == 200
+    assert db.resident.find_one({})["property-name"] == "Aspen"
 
 
 def test_save_visitor(client):
@@ -66,7 +113,7 @@ def test_get_only_visitor(client):
     resp_data = resp.get_json()
 
     assert len(resp_data) is 1
-    compare_visitor(visitor, resp_data[0])
+    compare_record(visitor, resp_data[0])
 
 
 def test_get_multiple_visitors(client):
@@ -79,7 +126,7 @@ def test_get_multiple_visitors(client):
     resp_data = resp.get_json()
     assert len(resp_data) == len(visitors)
     for i in range(len(resp_data)):
-        compare_visitor(visitors[i], resp_data[i])
+        compare_record(visitors[i], resp_data[i])
 
 
 def test_update_visitor(client):
