@@ -1,44 +1,26 @@
-import React, {useState, useRef, forwardRef} from 'react';
+import React, {forwardRef} from 'react';
 import {connect} from 'react-redux';
 
-import {ThemeProvider, Button, CSSReset, ColorModeProvider, Flex, Heading, useColorMode, useDisclosure} from '@chakra-ui/core';
+import {ThemeProvider, CSSReset, ColorModeProvider, useColorMode} from '@chakra-ui/core';
 import {Tabs, TabList, Tab, TabPanels, TabPanel} from '@chakra-ui/core';
 import {Icon} from '@chakra-ui/core';
 
-import Visitors from './containers/VisitorsList';
-import FormModal from './components/modals/Form';
-import RoundedButton from './components/RoundedButton';
-import SaveVisitorForm from './components/forms/SaveVisitor';
-import SaveResidentForm from './components/forms/SaveResident';
+import VisitorsTab from './components/tabs/Visitors';
+import NewVisitorTab from './components/tabs/NewVisitor';
+import ResidentTab from './components/tabs/Resident';
 
-import {postVisitorsForPermit, setVisitorFormInitialValues, setTabIndex} from './data/actions';
-
-const getVisitorsToSubmit = (allVisitors, visitorsToSubmit) => {
-    return allVisitors.filter((_, i) => visitorsToSubmit.includes(i))
-};
-
+import {setTabIndex} from './data/actions';
 
 const App = (props) => {
   const {toggleColorMode} = useColorMode();
   toggleColorMode('dark');
 
-  const {isOpen, onOpen, onClose} = useDisclosure();
-
   const {
-    allVisitors,
-    visitorsToSubmit,
-    submitVisitorsForPermit,
-    postingVisitorsForPermit,
-    results,
-    setFormInitialValues,
     tabIndex,
     setTabIndex,
   } = props;
 
-  const handleEditVisitorClick = (visitor) => {
-    setFormInitialValues(visitor);
-    onOpen();
-  };
+  console.log("Tab index is ", tabIndex);
 
   const handleTabsChange = (index) => setTabIndex(index);
 
@@ -67,34 +49,13 @@ const App = (props) => {
           >
                 <TabPanels flex={1} display="flex" flexDirection="column" p={4} pb="80px" overflow="auto">
                   <TabPanel flexGrow={1} display="flex" flexDirection="column" >
-                      <Flex direction="column" flexGrow={1} height="100%">
-                        <Heading size="2xl" mb={2}>Visitors</Heading>
-                        <Visitors
-                          allVisitors={allVisitors}
-                          visitorsToSubmit={visitorsToSubmit}
-                          results={results}
-                          onVisitorEditClick={handleEditVisitorClick}
-                        />
-                        <RoundedButton
-                          mt="auto"
-                          mb={4}
-                          size="lg"
-                          alignSelf="center"
-                          loadingText="Submitting..."
-                          onClick={() => submitVisitorsForPermit(getVisitorsToSubmit(allVisitors, visitorsToSubmit))}
-                          isLoading={postingVisitorsForPermit}
-                        >
-                            Submit for permit
-                        </RoundedButton>
-                      </Flex>
+                    <VisitorsTab />
                   </TabPanel>
                   <TabPanel>
-                    <Heading size="2xl" mb={2}>Add Visitor</Heading>
-                    <SaveVisitorForm />
+                    <NewVisitorTab />
                   </TabPanel>
                   <TabPanel>
-                    <Heading size="2xl" mb={2}>Resident</Heading>
-                    <SaveResidentForm />
+                    <ResidentTab />
                   </TabPanel>
                 </TabPanels>
 
@@ -105,26 +66,16 @@ const App = (props) => {
                 </TabList>
           </Tabs>
 
-        <FormModal
-          isOpen={isOpen}
-          onClose={onClose}
-        />
       </ColorModeProvider>
     </ThemeProvider>
   );
 };
 
 const mapStateToProps = (state) => ({
-  allVisitors: state.visitors.allVisitors,
-  visitorsToSubmit: state.visitors.visitorsToSubmit,
-  postingVisitorsForPermit: state.visitors.postingVisitorsForPermit,
-  results: state.visitors.results,
   tabIndex: state.visitors.tabIndex,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  submitVisitorsForPermit: (visitors) => visitors && dispatch(postVisitorsForPermit(visitors)),
-  setFormInitialValues: (values) => dispatch(setVisitorFormInitialValues(values)),
   setTabIndex: (index) => dispatch(setTabIndex(index)),
 });
 
