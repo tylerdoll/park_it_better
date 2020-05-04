@@ -150,9 +150,10 @@ export const postVisitorsForPermit = (visitors) => (dispatch) => {
   dispatch(postingVisitorsForPermit());
   post('/submit_visitors',
       visitors,
-      (results) => {
-        dispatch(postedVisitorsForPermit(results.json()));
-      },
+      (response) => response.json(),
       (e) => console.error('Could not post visitors for permit', e),
-  );
+  )
+  .then((results) => {
+    dispatch(postedVisitorsForPermit(results));
+  });
 };

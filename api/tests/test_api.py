@@ -4,18 +4,8 @@ import os
 import uuid
 
 import pytest
-import mongomock
 
-from api.app import APP, get_db
-
-
-@pytest.fixture
-def client(tmpdir):
-    APP.config["TESTING"] = True
-    APP.config["DB"] = mongomock.MongoClient().parking
-
-    with APP.test_client() as client:
-        yield client
+from api.db import get_db
 
 
 def create_dummy_resident():
@@ -55,47 +45,53 @@ def compare_record(record, data):
     assert record == data
 
 
-def test_save_resident(client):
-    db = get_db()
+def test_save_resident(app, client):
+    with app.app_context():
+        db = get_db()
 
-    resident = create_dummy_resident()
-    resp = client.post("/resident", json=resident)
-    assert resp.status_code == 201
-    assert db.resident.count_documents({}) == 1
-
-
-def test_get_resident(client):
-    db = get_db()
-
-    resident = create_dummy_resident()
-    db.resident.insert_one(resident)
-
-    resp = client.get("/resident")
-    assert resp.status_code == 200
-    compare_record(resident, resp.get_json())
+        resident = create_dummy_resident()
+        resp = client.post("/resident", json=resident)
+        assert resp.status_code == 201
+        assert db.resident.count_documents({}) == 1
 
 
-def test_update_resident(client):
-    db = get_db()
+def test_get_resident(app, client):
+    with app.app_context():
+        db = get_db()
 
-    resident = create_dummy_resident()
-    db.resident.insert_one(resident)
+        resident = create_dummy_resident()
+        db.resident.insert_one(resident)
 
-    assert db.resident.find_one({"_id": resident["_id"]})["property-name"] == "Water"
-    resident["property-name"] = "Aspen"
-    resident["_id"] = str(resident["_id"])
-    resp = client.post("/resident", json=resident)
-    assert resp.status_code == 200
-    assert db.resident.find_one({})["property-name"] == "Aspen"
+        resp = client.get("/resident")
+        assert resp.status_code == 200
+        compare_record(resident, resp.get_json())
 
 
-def test_save_visitor(client):
-    db = get_db()
+def test_update_resident(app, client):
+    with app.app_context():
+        db = get_db()
 
-    visitor = create_dummy_visitor()
-    resp = client.post("/visitors", json=visitor)
-    assert resp.status_code == 201
-    assert db.visitors.count_documents({}) == 1
+        resident = create_dummy_resident()
+        db.resident.insert_one(resident)
+
+        assert (
+            db.resident.find_one({"_id": resident["_id"]})["property-name"] == "Water"
+        )
+        resident["property-name"] = "Aspen"
+        resident["_id"] = str(resident["_id"])
+        resp = client.post("/resident", json=resident)
+        assert resp.status_code == 200
+        assert db.resident.find_one({})["property-name"] == "Aspen"
+
+
+def test_save_visitor(app, client):
+    with app.app_context():
+        db = get_db()
+
+        visitor = create_dummy_visitor()
+        resp = client.post("/visitors", json=visitor)
+        assert resp.status_code == 201
+        assert db.visitors.count_documents({}) == 1
 
 
 def test_get_empty_visitors(client):
@@ -103,61 +99,65 @@ def test_get_empty_visitors(client):
     assert len(resp.get_json()) is 0
 
 
-def test_get_only_visitor(client):
-    db = get_db()
+def test_get_only_visitor(app, client):
+    with app.app_context():
+        db = get_db()
 
-    visitor = create_dummy_visitor()
-    db.visitors.insert_one(visitor)
+        visitor = create_dummy_visitor()
+        db.visitors.insert_one(visitor)
 
-    resp = client.get("/visitors")
-    resp_data = resp.get_json()
+        resp = client.get("/visitors")
+        resp_data = resp.get_json()
 
-    assert len(resp_data) is 1
-    compare_record(visitor, resp_data[0])
-
-
-def test_get_multiple_visitors(client):
-    db = get_db()
-
-    visitors = [create_dummy_visitor(), create_dummy_visitor("travis", "scott")]
-    db.visitors.insert_many(visitors)
-
-    resp = client.get("/visitors")
-    resp_data = resp.get_json()
-    assert len(resp_data) == len(visitors)
-    for i in range(len(resp_data)):
-        compare_record(visitors[i], resp_data[i])
+        assert len(resp_data) is 1
+        compare_record(visitor, resp_data[0])
 
 
-def test_update_visitor(client):
-    db = get_db()
+def test_get_multiple_visitors(app, client):
+    with app.app_context():
+        db = get_db()
 
-    visitor = create_dummy_visitor()
-    visitor_id = db.visitors.insert_one(visitor).inserted_id
+        visitors = [create_dummy_visitor(), create_dummy_visitor("travis", "scott")]
+        db.visitors.insert_many(visitors)
 
-    assert db.visitors.find_one({"_id": visitor["_id"]})["visitor-color"] == "white"
-    resp = client.put(f"/visitors/{visitor_id}", json={"visitor-color": "black"})
-    assert resp.status_code == 200
-    assert db.visitors.find_one({"_id": visitor["_id"]})["visitor-color"] == "black"
-
-    visitor["_id"] = str(visitor["_id"])
-    resp = client.put(f"/visitors/{visitor_id}", json=visitor)
-    assert resp.status_code == 200
-
-    resp = client.put(f"/visitors/{ObjectId()}", json={"visitor-color": "black"})
-    assert resp.status_code == 404
+        resp = client.get("/visitors")
+        resp_data = resp.get_json()
+        assert len(resp_data) == len(visitors)
+        for i in range(len(resp_data)):
+            compare_record(visitors[i], resp_data[i])
 
 
-def test_delete_visitor(client):
-    db = get_db()
+def test_update_visitor(app, client):
+    with app.app_context():
+        db = get_db()
 
-    visitor = create_dummy_visitor()
-    visitor_id = db.visitors.insert_one(visitor).inserted_id
-    assert db.visitors.count_documents({}) == 1
+        visitor = create_dummy_visitor()
+        visitor_id = db.visitors.insert_one(visitor).inserted_id
 
-    resp = client.delete(f"/visitors/{visitor_id}")
-    assert resp.status_code == 200
-    assert db.visitors.count_documents({}) == 0
+        assert db.visitors.find_one({"_id": visitor["_id"]})["visitor-color"] == "white"
+        resp = client.put(f"/visitors/{visitor_id}", json={"visitor-color": "black"})
+        assert resp.status_code == 200
+        assert db.visitors.find_one({"_id": visitor["_id"]})["visitor-color"] == "black"
 
-    resp = client.delete(f"/visitors/{visitor_id}")
-    assert resp.status_code == 404
+        visitor["_id"] = str(visitor["_id"])
+        resp = client.put(f"/visitors/{visitor_id}", json=visitor)
+        assert resp.status_code == 200
+
+        resp = client.put(f"/visitors/{ObjectId()}", json={"visitor-color": "black"})
+        assert resp.status_code == 404
+
+
+def test_delete_visitor(app, client):
+    with app.app_context():
+        db = get_db()
+
+        visitor = create_dummy_visitor()
+        visitor_id = db.visitors.insert_one(visitor).inserted_id
+        assert db.visitors.count_documents({}) == 1
+
+        resp = client.delete(f"/visitors/{visitor_id}")
+        assert resp.status_code == 200
+        assert db.visitors.count_documents({}) == 0
+
+        resp = client.delete(f"/visitors/{visitor_id}")
+        assert resp.status_code == 404
