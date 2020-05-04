@@ -106,14 +106,14 @@ export const saveVisitor = (visitor, onComplete) => (dispatch) => {
   const onError = (e) => console.error('Could not save visitor', e);
 
   if (visitor["_id"]) {
-      put('/visitors/' + visitor["_id"],
+      put('/visitor/' + visitor["_id"],
           visitor,
           onSuccess,
           onError, 
       ).then(onComplete);
   }
   else {
-      post('/visitors',
+      post('/visitor',
           visitor,
           onSuccess,
           onError, 
@@ -136,7 +136,7 @@ export const fetchResident = () => (dispatch) => {
 export const fetchVisitors = () => (dispatch) => {
   dispatch(requestVisitors());
 
-  get('/visitors',
+  get('/visitor',
       (response) => response.json(),
       (e) => console.error('Could not get visitors', e),
   )
@@ -148,7 +148,7 @@ export const fetchVisitors = () => (dispatch) => {
 
 export const postVisitorsForPermit = (visitors) => (dispatch) => {
   dispatch(postingVisitorsForPermit());
-  post('/submit_visitors',
+  post('/visitor/submit',
       visitors,
       (response) => response.json(),
       (e) => console.error('Could not post visitors for permit', e),

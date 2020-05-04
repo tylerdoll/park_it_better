@@ -89,13 +89,13 @@ def test_save_visitor(app, client):
         db = get_db()
 
         visitor = create_dummy_visitor()
-        resp = client.post("/visitors", json=visitor)
+        resp = client.post("/visitor", json=visitor)
         assert resp.status_code == 201
         assert db.visitors.count_documents({}) == 1
 
 
 def test_get_empty_visitors(client):
-    resp = client.get("/visitors")
+    resp = client.get("/visitor")
     assert len(resp.get_json()) is 0
 
 
@@ -106,7 +106,7 @@ def test_get_only_visitor(app, client):
         visitor = create_dummy_visitor()
         db.visitors.insert_one(visitor)
 
-        resp = client.get("/visitors")
+        resp = client.get("/visitor")
         resp_data = resp.get_json()
 
         assert len(resp_data) is 1
@@ -120,7 +120,7 @@ def test_get_multiple_visitors(app, client):
         visitors = [create_dummy_visitor(), create_dummy_visitor("travis", "scott")]
         db.visitors.insert_many(visitors)
 
-        resp = client.get("/visitors")
+        resp = client.get("/visitor")
         resp_data = resp.get_json()
         assert len(resp_data) == len(visitors)
         for i in range(len(resp_data)):
@@ -135,15 +135,15 @@ def test_update_visitor(app, client):
         visitor_id = db.visitors.insert_one(visitor).inserted_id
 
         assert db.visitors.find_one({"_id": visitor["_id"]})["visitor-color"] == "white"
-        resp = client.put(f"/visitors/{visitor_id}", json={"visitor-color": "black"})
+        resp = client.put(f"/visitor/{visitor_id}", json={"visitor-color": "black"})
         assert resp.status_code == 200
         assert db.visitors.find_one({"_id": visitor["_id"]})["visitor-color"] == "black"
 
         visitor["_id"] = str(visitor["_id"])
-        resp = client.put(f"/visitors/{visitor_id}", json=visitor)
+        resp = client.put(f"/visitor/{visitor_id}", json=visitor)
         assert resp.status_code == 200
 
-        resp = client.put(f"/visitors/{ObjectId()}", json={"visitor-color": "black"})
+        resp = client.put(f"/visitor/{ObjectId()}", json={"visitor-color": "black"})
         assert resp.status_code == 404
 
 
@@ -155,9 +155,9 @@ def test_delete_visitor(app, client):
         visitor_id = db.visitors.insert_one(visitor).inserted_id
         assert db.visitors.count_documents({}) == 1
 
-        resp = client.delete(f"/visitors/{visitor_id}")
+        resp = client.delete(f"/visitor/{visitor_id}")
         assert resp.status_code == 200
         assert db.visitors.count_documents({}) == 0
 
-        resp = client.delete(f"/visitors/{visitor_id}")
+        resp = client.delete(f"/visitor/{visitor_id}")
         assert resp.status_code == 404

@@ -13,7 +13,7 @@ from api.web_driver import create_driver, submit_visitor_info
 blueprint = Blueprint("visitor", __name__)
 
 
-@blueprint.route("/visitors", methods=["POST"])
+@blueprint.route("/visitor", methods=["POST"])
 def post():
     db = get_db()
     visitor = request.json
@@ -21,14 +21,14 @@ def post():
     return "", 201
 
 
-@blueprint.route("/visitors")
+@blueprint.route("/visitor")
 def get():
     db = get_db()
     visitors = [format_record(v) for v in db.visitors.find()]
     return jsonify(visitors)
 
 
-@blueprint.route("/visitors/<visitor_id>", methods=["PUT"])
+@blueprint.route("/visitor/<visitor_id>", methods=["PUT"])
 def put(visitor_id):
     db = get_db()
 
@@ -45,7 +45,7 @@ def put(visitor_id):
     return "", 500
 
 
-@blueprint.route("/visitors/<visitor_id>", methods=["DELETE"])
+@blueprint.route("/visitor/<visitor_id>", methods=["DELETE"])
 def delete(visitor_id):
     db = get_db()
     result = db.visitors.delete_one({"_id": ObjectId(visitor_id)})
@@ -53,7 +53,7 @@ def delete(visitor_id):
     return "", status_code
 
 
-@blueprint.route("/submit_visitors", methods=["POST"])
+@blueprint.route("/visitor/submit", methods=["POST"])
 def post_submit_form():
     db = get_db()
     resident = db.resident.find_one(projection={"_id": False})
