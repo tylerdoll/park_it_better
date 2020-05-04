@@ -47,8 +47,8 @@ const App = (props) => {
             index={tabIndex}
             onChange={handleTabsChange}
           >
-                <TabPanels flex={1} display="flex" flexDirection="column" p={4} pb="80px" overflow="auto">
-                  <TabPanel flexGrow={1} display="flex" flexDirection="column" >
+                <TabPanels flex={1} display="flex" flexDirection="column" p={4} pb="80px">
+                  <TabPanel>
                     <VisitorsTab />
                   </TabPanel>
                   <TabPanel>

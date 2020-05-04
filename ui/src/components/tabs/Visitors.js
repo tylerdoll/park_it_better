@@ -1,6 +1,9 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import {CSSTransition} from 'react-transition-group';
+import "../../styles.css";
+
 import {useDisclosure} from '@chakra-ui/core';
 import {Flex} from '@chakra-ui/core';
 import {Heading} from '@chakra-ui/core';
@@ -32,33 +35,40 @@ const VisitorsTab = (props) => {
   const {isOpen, onOpen, onClose} = useDisclosure();
 
   return (
-    <div>
-        <Flex direction="column" flexGrow={1} height="100%">
-          <Heading size="2xl" mb={2}>Visitors</Heading>
-          <Visitors
-            allVisitors={allVisitors}
-            visitorsToSubmit={visitorsToSubmit}
-            results={results}
-            onVisitorEditClick={handleEditVisitorClick}
-          />
-          <RoundedButton
-            mt="auto"
-            mb={4}
-            size="lg"
-            alignSelf="center"
-            loadingText="Submitting..."
-            onClick={() => submitVisitorsForPermit(getVisitorsToSubmit(allVisitors, visitorsToSubmit))}
-            isLoading={postingVisitorsForPermit}
-          >
-              Submit for permit
-          </RoundedButton>
-        </Flex>
+    <Flex direction="column">
+      <Heading size="2xl" mb={2}>Visitors</Heading>
 
-        <FormModal
-          isOpen={isOpen}
-          onClose={onClose}
-        />
-    </div>
+      <CSSTransition in={visitorsToSubmit.length > 0} timeout={200} classNames="fade-up" unmountOnExit>
+        <RoundedButton
+          mt="auto"
+          mx="auto"
+          mb={4}
+          size="lg"
+          position="fixed"
+          bottom="80px"
+          alignSelf="center"
+          loadingText="Submitting..."
+          bg="gray.600"
+          onClick={() => submitVisitorsForPermit(getVisitorsToSubmit(allVisitors, visitorsToSubmit))}
+          isLoading={postingVisitorsForPermit}
+          _disabled={{opacity: 1.0, bg: "gray.700", color: "gray.600"}}
+        >
+            Submit for permit
+        </RoundedButton>
+      </CSSTransition>
+
+      <Visitors
+        allVisitors={allVisitors}
+        visitorsToSubmit={visitorsToSubmit}
+        results={results}
+        onVisitorEditClick={handleEditVisitorClick}
+      />
+
+      <FormModal
+        isOpen={isOpen}
+        onClose={onClose}
+      />
+    </Flex>
   );
 };
 
