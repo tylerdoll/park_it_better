@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Checkbox, IconButton, Flex} from '@chakra-ui/core';
 
-const Visitor = ({id, onChange, label, isInvalid, markedForSubmit, onEditClick}) => (
+const Visitor = ({id, onChange, label, isInvalid, markedForSubmit, onEditClick, onDeleteClick}) => (
   <Flex align="center" py={3}>
     <Checkbox
       size="lg"
@@ -15,6 +15,7 @@ const Visitor = ({id, onChange, label, isInvalid, markedForSubmit, onEditClick})
       isChecked={markedForSubmit}
     >{label}</Checkbox>
     <IconButton icon="edit" variant="ghost" onClick={onEditClick}/>
+    <IconButton icon="delete" variant="ghost" onClick={onDeleteClick}/>
   </Flex>
 );
 

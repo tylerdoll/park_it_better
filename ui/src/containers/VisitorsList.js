@@ -8,7 +8,7 @@ import Visitor from '../components/Visitor';
 
 const VisitorsList = (props) => {
   const {
-    allVisitors, visitorsToSubmit, onVisitorClick, results, onVisitorEditClick,
+    allVisitors, visitorsToSubmit, onVisitorClick, results, onVisitorEditClick, onVisitorDeleteClick,
   } = props;
 
   const toast = useToast();
@@ -45,6 +45,7 @@ const VisitorsList = (props) => {
         label={key}
         onChange={onVisitorClick}
         onEditClick={() => onVisitorEditClick(v)}
+        onDeleteClick={() => onVisitorDeleteClick(v)}
         isInvalid={isInvalid()}
         markedForSubmit={visitorsToSubmit.includes(i)}
       />;

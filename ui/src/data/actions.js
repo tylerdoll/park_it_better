@@ -1,4 +1,4 @@
-import {get, post, put} from '../API';
+import {get, post, put, del} from '../API';
 
 export const TOGGLE_VISITOR_FOR_SUBMIT = 'TOGGLE_VISITOR_FOR_SUBMIT';
 export const toggleForSubmit = (id) => ({
@@ -52,6 +52,16 @@ export const savingVisitor = () => ({
 export const SAVED_VISITOR = 'SAVED_VISITOR';
 export const savedVisitor = () => ({
   type: SAVED_VISITOR,
+});
+
+export const DELETING_VISITOR = 'DELETING_VISITOR';
+export const deletingVisitor = () => ({
+  type: DELETING_VISITOR,
+});
+
+export const DELETED_VISITOR = 'DELETED_VISITOR';
+export const deletedVisitor = () => ({
+  type: DELETED_VISITOR,
 });
 
 export const POSTING_VISITORS_FOR_PERMIT = 'POSTING_VISITORS_FOR_PERMIT';
@@ -156,4 +166,15 @@ export const postVisitorsForPermit = (visitors) => (dispatch) => {
   .then((results) => {
     dispatch(postedVisitorsForPermit(results));
   });
+};
+
+export const deleteVisitor = (id) => (dispatch) => {
+  dispatch(deletingVisitor());
+  del(`/visitor/${id}`,
+      (resp) => {
+        dispatch(deletedVisitor());
+        dispatch(fetchVisitors());
+      },
+      (e) => console.error('Could not delete visitor', e),
+  );
 };

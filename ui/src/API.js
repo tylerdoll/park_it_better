@@ -37,3 +37,13 @@ export function put(route, json, onSuccess, onError) {
     (error) => onError(error),
   )
 }
+
+export function del(route, onSuccess, onError) {
+  return fetch(BASE_PATH + route, {
+    method: 'DELETE',
+  })
+  .then(
+    (response) => onSuccess(response),
+    (error) => onError(error),
+  )
+}
