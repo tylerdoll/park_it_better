@@ -23,7 +23,7 @@ const VisitorsList = (props) => {
         description: r.response,
         status: r.succeeded ? 'success' : 'error',
         isClosable: true,
-        duration: 8000, // ms
+        duration: 5000, // ms
       });
     });
   });
