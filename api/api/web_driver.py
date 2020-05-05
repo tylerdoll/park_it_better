@@ -63,14 +63,11 @@ def submit_visitor_info(driver, resident, visitor):
     if not set(visitor.keys()).issubset(_VISITOR_FIELDS):
         raise KeyError(f"Missing fields\nwhat provided {visitor.keys()}\nwhat was expected: {_VISITOR_FIELDS}")
 
-    def create_response(succeeded, response):
-        return {"visitor": visitor, "succeeded": succeeded, "response": response}
-
     driver.get(_FORM_URL)
     try:
         _wait_for_loader_to_stop(driver)
     except TimeoutException:
-        return create_response(False, "Timeout while waiting for loader to go away")
+        return False, "Timeout while waiting for loader to go away"
 
     _fill_form_inputs(driver, resident)
     _fill_form_inputs(driver, visitor)
@@ -78,13 +75,13 @@ def submit_visitor_info(driver, resident, visitor):
     driver.find_element_by_id(_SUBMIT_BTN).click()
 
     try:
-        response_output = _check_for_invalid_response(driver)
+        msg = _check_for_invalid_response(driver)
         succeeded = False  # If we didn't timeout that means the form was invalid
     except TimeoutException:
         succeeded = True
-        response_output = "Permit submitted"
+        msg = "Permit submitted"
     finally:
-        return create_response(succeeded, response_output)
+        return succeeded, msg
 
 
 def _fill_form_inputs(driver, inputs):

@@ -1,9 +1,10 @@
 # std
 from bson.json_util import ObjectId
 import logging
+import random
 
 # 3rd party
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, current_app, jsonify, request
 
 # local
 from api.db import get_db
@@ -62,14 +63,35 @@ def post_submit_form():
 
     driver = create_driver()
     visitors = request.json
+    fake = request.headers.get("fake", "")
 
     responses = []
     for visitor in visitors:
         if "_id" in visitor:
             visitor.pop("_id")
-        logging.info(f"Submitting parking info for {visitor}")
-        response = submit_visitor_info(driver, resident, visitor)
+
+        if current_app.config["ENV"] == "development":
+            response = _fake_submit(visitor)
+        else:
+            logging.info(f"Submitting parking info for {visitor}")
+            succeeded, msg = submit_visitor_info(driver, resident, visitor)
+            response = create_response(visitor, succeeded, msg)
+
         responses.append(response)
         logging.debug(response)
 
     return jsonify(responses)
+
+
+def _create_response(visitor, succeeded, msg):
+    return {"visitor": visitor, "succeeded": succeeded, "response": msg}
+
+
+def _fake_submit(visitor):
+    succeeded = random.randint(0, 1)
+    if succeeded:
+        logging.warning(f"Faking successful submit for {visitor}")
+        return _create_response(visitor, True, "FAKE: Succesfully submitted")
+    else:
+        logging.warning(f"Faking fail submit for {visitor}")
+        return _create_response(visitor, False, "FAKE: Error while submitting")
