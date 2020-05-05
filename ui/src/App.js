@@ -27,8 +27,13 @@ const App = (props) => {
   const IconTab = forwardRef((props, ref) => {
       const {label, icon, color} = props;
       return (
-        <Tab ref={ref} isSelected={props.isSelected} flex={1} {...props} _selected={{}}>
-          <Icon aria-label={label} name={icon} color={props.isSelected ? color : "white"}/>
+        <Tab ref={ref} isSelected={props.isSelected} flex={1} p={0} {...props} _selected={{}}>
+          <Icon
+            aria-label={label}
+            name={icon}
+            color={props.isSelected ? color : "white"}
+            size="32px"
+          />
         </Tab>
       );
   });
