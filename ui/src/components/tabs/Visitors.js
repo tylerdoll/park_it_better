@@ -10,7 +10,7 @@ import {Heading} from '@chakra-ui/core';
 import {AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogBody, AlertDialogHeader, AlertDialogOverlay, Button} from '@chakra-ui/core';
 import {useToast} from '@chakra-ui/core';
 
-import Visitors from '../../containers/VisitorsList';
+import VisitorsList from '../VisitorsList';
 import FormModal from '../modals/Form';
 import RoundedButton from '../RoundedButton';
 import {
@@ -110,7 +110,7 @@ const VisitorsTab = (props) => {
         </RoundedButton>
       </CSSTransition>
 
-      <Visitors
+      <VisitorsList
         allVisitors={allVisitors}
         invalidVisitors={invalidVisitors}
         visitorsToSubmit={visitorsToSubmit}
