@@ -67,14 +67,14 @@ def post_submit_form():
 
     responses = []
     for visitor in visitors:
-        if "_id" in visitor:
-            visitor.pop("_id")
+        fields_to_submit = visitor.copy()
+        fields_to_submit.pop("_id")
 
         if current_app.config["ENV"] == "development":
             response = _fake_submit(visitor)
         else:
             logging.info(f"Submitting parking info for {visitor}")
-            succeeded, msg = submit_visitor_info(driver, resident, visitor)
+            succeeded, msg = submit_visitor_info(driver, resident, fields_to_submit)
             response = create_response(visitor, succeeded, msg)
 
         responses.append(response)

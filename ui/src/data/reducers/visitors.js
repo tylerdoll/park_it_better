@@ -1,3 +1,5 @@
+import {v4 as uuid4} from 'uuid';
+
 import {
   CLEAR_SUBMISSION,
   RECEIVE_VISITORS,
@@ -7,12 +9,17 @@ import {
   POSTING_VISITORS_FOR_PERMIT,
   POSTED_VISITORS_FOR_PERMIT,
   SET_VISITOR_FORM_INITIAL_VALUES,
+  REMOVE_TOAST,
+  CLEAR_VISITORS_TO_SUBMIT,
+  SHOW_TOASTS,
+  MARK_INVALID_VISITORS,
 } from '../actions/visitors';
 
 const initialState = {
   allVisitors: [],
   visitorsToSubmit: [],
-  results: [],
+  invalidVisitors: [],
+  toasts: [],
   saving: false,
   visitorFormInitialValues: {
       'visitor-first-name': '',
@@ -38,6 +45,7 @@ export default function(state = initialState, action) {
       const {json} = action.payload;
       return {
         ...state,
+        invalidVisitors: [],
         allVisitors: json,
       };
 
@@ -47,14 +55,52 @@ export default function(state = initialState, action) {
         postingVisitorsForPermit: true,
       };
 
-    case POSTED_VISITORS_FOR_PERMIT:
-      const {results} = action.payload;
+    case POSTED_VISITORS_FOR_PERMIT: {
       return {
         ...state,
         postingVisitorsForPermit: false,
-        results,
+      };
+    }
+
+    case CLEAR_VISITORS_TO_SUBMIT: {
+      return {
+        ...state,
         visitorsToSubmit: [],
       };
+    }
+
+    case SHOW_TOASTS: {
+      const {results} = action.payload;
+
+      const toasts = results.map((result) => {
+        const {visitor} = result;
+        const name = `${visitor['visitor-first-name']} ${visitor['visitor-last-name']}`;
+        return {
+          id: uuid4(),
+          title: result.succeeded ? `Successfully submit ${name}` : `Failed to submit ${name}`,
+          description: result.response,
+          status: result.succeeded ? 'success' : 'error',
+        };
+      });
+
+      return {
+        ...state,
+        toasts,
+      };
+    }
+
+    case MARK_INVALID_VISITORS: {
+      const {results} = action.payload;
+
+      const invalidVisitors = results
+        .filter((result) => !result.succeeded)
+        .map((result) => result.visitor["_id"]);
+
+      return {
+        ...state,
+        invalidVisitors,
+      };
+    }
 
     case SAVING_VISITOR:
       return {
@@ -95,6 +141,15 @@ export default function(state = initialState, action) {
         ...state,
         visitorFormInitialValues: values,
       };
+
+    case REMOVE_TOAST: {
+      const {id} = action.payload;
+      const toasts = state.toasts.filter((toast) => toast.id != id);
+      return {
+        ...state,
+        toasts,
+      }
+    }
 
     default:
       return state;

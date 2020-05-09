@@ -20,7 +20,8 @@
     "react-transition-group": "^4.3.0",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
-    "serve": "^11.3.0"
+    "serve": "^11.3.0",
+    "uuid": "^8.0.0"
   },
   "scripts": {
     "publish": "npm run build && docker buildx build --platform linux/arm/v7,linux/amd64 -t tylerdoll/better_parking_permits --push .",

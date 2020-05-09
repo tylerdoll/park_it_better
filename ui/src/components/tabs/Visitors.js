@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {connect} from 'react-redux';
 
 import {CSSTransition} from 'react-transition-group';
@@ -8,6 +8,7 @@ import {useDisclosure} from '@chakra-ui/core';
 import {Flex} from '@chakra-ui/core';
 import {Heading} from '@chakra-ui/core';
 import {AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogBody, AlertDialogHeader, AlertDialogOverlay, Button} from '@chakra-ui/core';
+import {useToast} from '@chakra-ui/core';
 
 import Visitors from '../../containers/VisitorsList';
 import FormModal from '../modals/Form';
@@ -17,7 +18,8 @@ import {
   setVisitorFormInitialValues,
   deleteVisitor,
   toggleForSubmit,
-  clearSubmission
+  clearSubmission,
+  removeToast,
 } from '../../data/actions/visitors';
 
 const getVisitorsToSubmit = (allVisitors, visitorsToSubmit) => {
@@ -27,12 +29,14 @@ const getVisitorsToSubmit = (allVisitors, visitorsToSubmit) => {
 const VisitorsTab = (props) => {
   const {
     allVisitors,
+    invalidVisitors,
     visitorsToSubmit,
     postingVisitorsForPermit,
-    results,
+    toasts,
     dispatchClearSubmission,
     dispatchDeleteVisitor,
     dispatchPostVisitorsForPermit,
+    dispatchRemoveToast,
     dispatchSetVisitorFormInitialValues,
     dispatchToggleForSubmit,
   } = props;
@@ -47,10 +51,22 @@ const VisitorsTab = (props) => {
   const onDeleteVisitorDialogClose = () => setIsDeleteVisitorDialogOpen(false);
   const cancelRef = React.useRef();
 
+  const toast = useToast();
+  useEffect(() => {
+    if (toasts.length === 0) return;
+
+    const t = toasts.pop();
+    toast({
+      title: t.title,
+      description: t.description,
+      status: t.status,
+      isClosable: true,
+      duration: 5000, // ms
+    });
+    dispatchRemoveToast(t.id);
+  });
+
   const handleVisitorClick =  (id) => {
-    if (results.length) {
-      dispatchClearSubmission();
-    }
     dispatchToggleForSubmit(id);
   };
 
@@ -96,8 +112,8 @@ const VisitorsTab = (props) => {
 
       <Visitors
         allVisitors={allVisitors}
+        invalidVisitors={invalidVisitors}
         visitorsToSubmit={visitorsToSubmit}
-        results={results}
         onVisitorClick={handleVisitorClick}
         onVisitorEditClick={handleEditVisitorClick}
         onVisitorDeleteClick={handleDeleteVisitorClick}
@@ -139,9 +155,10 @@ const VisitorsTab = (props) => {
 
 const mapStateToProps = (state) => ({
   allVisitors: state.visitors.allVisitors,
+  invalidVisitors: state.visitors.invalidVisitors,
   visitorsToSubmit: state.visitors.visitorsToSubmit,
   postingVisitorsForPermit: state.visitors.postingVisitorsForPermit,
-  results: state.visitors.results,
+  toasts: state.visitors.toasts,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -149,6 +166,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   dispatchPostVisitorsForPermit: (visitors) => dispatch(postVisitorsForPermit(visitors)),
   dispatchDeleteVisitor: (id) => dispatch(deleteVisitor(id)),
   dispatchClearSubmission: () => dispatch(clearSubmission()),
+  dispatchRemoveToast: (id) => dispatch(removeToast(id)),
   dispatchToggleForSubmit: (id) => dispatch(toggleForSubmit(id)),
 });
 

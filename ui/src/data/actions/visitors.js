@@ -50,8 +50,24 @@ export const postingVisitorsForPermit = () => ({
 });
 
 export const POSTED_VISITORS_FOR_PERMIT = 'POSTED_VISITORS_FOR_PERMIT';
-export const postedVisitorsForPermit = (results) => ({
+export const postedVisitorsForPermit = () => ({
   type: POSTED_VISITORS_FOR_PERMIT,
+});
+
+export const CLEAR_VISITORS_TO_SUBMIT = 'CLEAR_VISITORS_TO_SUBMIT';
+export const clearVisitorsToSubmit = () => ({
+  type: CLEAR_VISITORS_TO_SUBMIT,
+});
+
+export const SHOW_TOASTS = 'SHOW_TOASTS';
+export const showToasts = (results) => ({
+  type: SHOW_TOASTS,
+  payload: {results},
+});
+
+export const MARK_INVALID_VISITORS = 'MARK_INVALID_VISITORS';
+export const markInvalidVisitors = (results) => ({
+  type: MARK_INVALID_VISITORS,
   payload: {results},
 });
 
@@ -64,6 +80,12 @@ export const SET_VISITOR_FORM_INITIAL_VALUES = 'SET_VISITOR_FORM_INITIAL_VALUES'
 export const setVisitorFormInitialValues = (values) => ({
   type: SET_VISITOR_FORM_INITIAL_VALUES,
   payload: {values},
+});
+
+export const REMOVE_TOAST = 'REMOVE_TOAST';
+export const removeToast = (id) => ({
+  type: REMOVE_TOAST,
+  payload: {id},
 });
 
 export const saveVisitor = (visitor, onComplete) => (dispatch) => {
@@ -125,6 +147,9 @@ export const postVisitorsForPermit = (visitors) => (dispatch) => {
       (e) => console.error('Could not post visitors for permit', e),
   )
   .then((results) => {
-    dispatch(postedVisitorsForPermit(results));
+    dispatch(postedVisitorsForPermit());
+    dispatch(clearVisitorsToSubmit());
+    dispatch(showToasts(results));
+    dispatch(markInvalidVisitors(results));
   });
 };

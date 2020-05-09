@@ -1,41 +1,15 @@
-import React, {useEffect} from 'react';
-
-import {useToast} from '@chakra-ui/core';
+import React from 'react';
 
 import Visitor from '../components/Visitor';
 
 const VisitorsList = (props) => {
   const {
-    allVisitors, visitorsToSubmit, onVisitorClick, results, onVisitorEditClick, onVisitorDeleteClick,
+    allVisitors, visitorsToSubmit, onVisitorClick, invalidVisitors, onVisitorEditClick, onVisitorDeleteClick,
   } = props;
-
-  const toast = useToast();
-  useEffect(() => {
-    results.forEach((r, i) => {
-      const {visitor} = r;
-      const name = `${visitor['visitor-first-name']} ${visitor['visitor-last-name']}`;
-      const title = r.succeeded ? `Successfully submit ${name}` : `Failed to submit ${name}`;
-
-      toast({
-        title,
-        description: r.response,
-        status: r.succeeded ? 'success' : 'error',
-        isClosable: true,
-        duration: 5000, // ms
-      });
-    });
-  });
 
   if (allVisitors && allVisitors.length) {
     return allVisitors.map((v, i) => {
       const key = `${v['visitor-first-name']} ${v['visitor-last-name']}`;
-      const isInvalid = () => {
-        const result = results.find((r) => {
-          return r.visitor['visitor-first-name'] === v['visitor-first-name'] &&
-              r.visitor['visitor-last-name'] === v['visitor-last-name'];
-        });
-        return result ? !result.succeeded : false;
-      };
 
       return <Visitor
         key={i}
@@ -44,7 +18,7 @@ const VisitorsList = (props) => {
         onChange={onVisitorClick}
         onEditClick={() => onVisitorEditClick(v)}
         onDeleteClick={() => onVisitorDeleteClick(v)}
-        isInvalid={isInvalid()}
+        isInvalid={invalidVisitors.includes(v["_id"])}
         markedForSubmit={visitorsToSubmit.includes(i)}
       />;
     });
