@@ -13,6 +13,8 @@ import {
   CLEAR_VISITORS_TO_SUBMIT,
   SHOW_TOASTS,
   MARK_INVALID_VISITORS,
+  OPEN_DELETE_VISITOR_DIALOG,
+  CLOSE_DELETE_VISITOR_DIALOG,
 } from '../actions/visitors';
 
 const initialState = {
@@ -21,6 +23,10 @@ const initialState = {
   invalidVisitors: [],
   toasts: [],
   saving: false,
+  deleteVisitorDialog: {
+    isOpen: false,
+    visitorId: null,
+  },
   visitorFormInitialValues: {
       'visitor-first-name': '',
       'visitor-last-name': '',
@@ -148,7 +154,32 @@ export default function(state = initialState, action) {
       return {
         ...state,
         toasts,
-      }
+      };
+    }
+
+    case OPEN_DELETE_VISITOR_DIALOG: {
+      const {visitorId} = action.payload;
+      const deleteVisitorDialog = {
+        ...state.deleteVisitorDialog,
+        isOpen: true,
+        visitorId,
+      };
+      return {
+        ...state,
+        deleteVisitorDialog,
+      };
+    }
+
+    case CLOSE_DELETE_VISITOR_DIALOG: {
+      const deleteVisitorDialog = {
+        ...state.deleteVisitorDialog,
+        isOpen: false,
+        visitorId: null,
+      };
+      return {
+        ...state,
+        deleteVisitorDialog,
+      };
     }
 
     default:

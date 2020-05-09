@@ -7,12 +7,12 @@ import "../../styles.css";
 import {useDisclosure} from '@chakra-ui/core';
 import {Flex} from '@chakra-ui/core';
 import {Heading} from '@chakra-ui/core';
-import {AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogBody, AlertDialogHeader, AlertDialogOverlay, Button} from '@chakra-ui/core';
 import {useToast} from '@chakra-ui/core';
 
 import VisitorsList from '../VisitorsList';
 import FormModal from '../modals/Form';
 import RoundedButton from '../RoundedButton';
+import DeleteVisitorDialog from '../dialogs/DeleteVisitor';
 import {
   postVisitorsForPermit,
   setVisitorFormInitialValues,
@@ -20,6 +20,7 @@ import {
   toggleForSubmit,
   clearSubmission,
   removeToast,
+  openDeleteVisitorDialog,
 } from '../../data/actions/visitors';
 
 const getVisitorsToSubmit = (allVisitors, visitorsToSubmit) => {
@@ -39,16 +40,10 @@ const VisitorsTab = (props) => {
     dispatchRemoveToast,
     dispatchSetVisitorFormInitialValues,
     dispatchToggleForSubmit,
+    dispatchOpenDeleteVisitorDialog,
   } = props;
 
-  const handleEditVisitorClick = (visitor) => {
-    dispatchSetVisitorFormInitialValues(visitor);
-    onOpen();
-  };
-
   const {isOpen, onOpen, onClose} = useDisclosure();
-  const [isDeleteVisitorDialogOpen, setIsDeleteVisitorDialogOpen] = React.useState(false);
-  const onDeleteVisitorDialogClose = () => setIsDeleteVisitorDialogOpen(false);
   const cancelRef = React.useRef();
 
   const toast = useToast();
@@ -66,26 +61,18 @@ const VisitorsTab = (props) => {
     dispatchRemoveToast(t.id);
   });
 
-  const handleVisitorClick =  (id) => {
-    dispatchToggleForSubmit(id);
+  const handleDeleteVisitorClick = (id) => dispatchOpenDeleteVisitorDialog(id);
+  const handleEditVisitorClick = (visitor) => {
+    dispatchSetVisitorFormInitialValues(visitor);
+    onOpen();
   };
-
-  const handleDeleteVisitorClick = (visitor) => {
-    setIsDeleteVisitorDialogOpen(true);
-  };
-
-  const handleConfirmDeleteVisitorClick = (visitor) => {
-    console.log(visitor);
-    dispatchDeleteVisitor(visitor["_id"]);
-    setIsDeleteVisitorDialogOpen(false);
-  };
-
   const handleSubmitVisitorsForPermitClick = () => {
     const visitors = getVisitorsToSubmit(allVisitors, visitorsToSubmit);
     if (visitors) {
       dispatchPostVisitorsForPermit(visitors);
     }
   };
+  const handleVisitorClick =  (id) => dispatchToggleForSubmit(id);
 
   return (
     <Flex direction="column">
@@ -124,31 +111,7 @@ const VisitorsTab = (props) => {
         onClose={onClose}
       />
 
-      <AlertDialog
-        isOpen={isDeleteVisitorDialogOpen}
-        leastDestructiveRef={cancelRef}
-        onClose={onDeleteVisitorDialogClose}
-      >
-        <AlertDialogOverlay />
-        <AlertDialogContent>
-          <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            Delete Visitor
-          </AlertDialogHeader>
-
-          <AlertDialogBody>
-            Are you sure? You can't undo this action afterwards.
-          </AlertDialogBody>
-
-          <AlertDialogFooter>
-            <Button ref={cancelRef} onClick={onDeleteVisitorDialogClose}>
-              Cancel
-            </Button>
-            <Button variantColor="red" onClick={handleConfirmDeleteVisitorClick} ml={3}>
-              Delete
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteVisitorDialog ref={cancelRef} />
     </Flex>
   );
 };
@@ -164,8 +127,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch, ownProps) => ({
   dispatchSetVisitorFormInitialValues: (values) => dispatch(setVisitorFormInitialValues(values)),
   dispatchPostVisitorsForPermit: (visitors) => dispatch(postVisitorsForPermit(visitors)),
-  dispatchDeleteVisitor: (id) => dispatch(deleteVisitor(id)),
   dispatchClearSubmission: () => dispatch(clearSubmission()),
+  dispatchOpenDeleteVisitorDialog: (id) => dispatch(openDeleteVisitorDialog(id)),
   dispatchRemoveToast: (id) => dispatch(removeToast(id)),
   dispatchToggleForSubmit: (id) => dispatch(toggleForSubmit(id)),
 });

@@ -88,6 +88,17 @@ export const removeToast = (id) => ({
   payload: {id},
 });
 
+export const OPEN_DELETE_VISITOR_DIALOG = 'OPEN_DELETE_VISITOR_DIALOG';
+export const openDeleteVisitorDialog = (visitorId) => ({
+  type: OPEN_DELETE_VISITOR_DIALOG,
+  payload: {visitorId},
+});
+
+export const CLOSE_DELETE_VISITOR_DIALOG = 'CLOSE_DELETE_VISITOR_DIALOG';
+export const closeDeleteVisitorDialog = () => ({
+  type: CLOSE_DELETE_VISITOR_DIALOG,
+});
+
 export const saveVisitor = (visitor, onComplete) => (dispatch) => {
   dispatch(savingVisitor());
 
@@ -132,7 +143,7 @@ export const deleteVisitor = (id) => (dispatch) => {
   dispatch(deletingVisitor());
   del(`/visitor/${id}`,
       (resp) => {
-        dispatch(deletedVisitor());
+        dispatch(closeDeleteVisitorDialog());
         dispatch(fetchVisitors());
       },
       (e) => console.error('Could not delete visitor', e),

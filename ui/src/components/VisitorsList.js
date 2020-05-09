@@ -17,7 +17,7 @@ const VisitorsList = (props) => {
         label={key}
         onChange={onVisitorClick}
         onEditClick={() => onVisitorEditClick(v)}
-        onDeleteClick={() => onVisitorDeleteClick(v)}
+        onDeleteClick={() => onVisitorDeleteClick(v["_id"])}
         isInvalid={invalidVisitors.includes(v["_id"])}
         markedForSubmit={visitorsToSubmit.includes(i)}
       />;
