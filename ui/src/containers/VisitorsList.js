@@ -1,9 +1,7 @@
 import React, {useEffect} from 'react';
-import {connect} from 'react-redux';
 
 import {useToast} from '@chakra-ui/core';
 
-import {toggleForSubmit, clearSubmission} from '../data/actions';
 import Visitor from '../components/Visitor';
 
 const VisitorsList = (props) => {
@@ -55,17 +53,4 @@ const VisitorsList = (props) => {
   }
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
-    ...ownProps,
-    onVisitorClick: (id) => {
-      if (ownProps.results.length) {
-        console.log('clearing');
-        dispatch(clearSubmission());
-      }
-      dispatch(toggleForSubmit(id));
-    },
-  };
-};
-
-export default connect(null, mapDispatchToProps)(VisitorsList);
+export default VisitorsList;

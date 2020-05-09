@@ -1,10 +1,19 @@
-import {CLEAR_SUBMISSION, RECEIVE_VISITORS, TOGGLE_VISITOR_FOR_SUBMIT, SAVING_VISITOR, SAVED_VISITOR, POSTING_VISITORS_FOR_PERMIT, POSTED_VISITORS_FOR_PERMIT, SET_VISITOR_FORM_INITIAL_VALUES, SET_TAB_INDEX, SAVING_RESIDENT, SAVED_RESIDENT, RECEIVE_RESIDENT} from '../actions';
+import {
+  CLEAR_SUBMISSION,
+  RECEIVE_VISITORS,
+  TOGGLE_VISITOR_FOR_SUBMIT,
+  SAVING_VISITOR,
+  SAVED_VISITOR,
+  POSTING_VISITORS_FOR_PERMIT,
+  POSTED_VISITORS_FOR_PERMIT,
+  SET_VISITOR_FORM_INITIAL_VALUES,
+} from '../actions/visitors';
 
 const initialState = {
   allVisitors: [],
   visitorsToSubmit: [],
   results: [],
-  savingVisitor: false,
+  saving: false,
   visitorFormInitialValues: {
       'visitor-first-name': '',
       'visitor-last-name': '',
@@ -20,17 +29,6 @@ const initialState = {
       'visitor-apt-number': 'n/a',
       'visitor-city': 'n/a',
       'visitor-zip': 'n/a',
-  },
-  tabIndex: 0,
-  resident: {
-    "property-name": "",
-    "first-name-of-resident": "",
-    "last-name-of-resident": "",
-    "resident-address": "",
-    "resident-apartment": "",
-    "resident-city": "",
-    "resident-state": "",
-    "resident-zip": "",
   },
 };
 
@@ -58,35 +56,16 @@ export default function(state = initialState, action) {
         visitorsToSubmit: [],
       };
 
-    case SAVING_RESIDENT:
-      return {
-        ...state,
-        savingResident: true,
-      };
-
-    case SAVED_RESIDENT:
-      return {
-        ...state,
-        savingResident: false,
-      };
-
-    case RECEIVE_RESIDENT:
-      const {resident} = action.payload;
-      return {
-        ...state,
-        resident,
-      };
-
     case SAVING_VISITOR:
       return {
         ...state,
-        savingVisitor: true,
+        saving: true,
       };
 
     case SAVED_VISITOR:
       return {
         ...state,
-        savingVisitor: false,
+        saving: false,
       };
 
     case TOGGLE_VISITOR_FOR_SUBMIT:
@@ -115,13 +94,6 @@ export default function(state = initialState, action) {
       return {
         ...state,
         visitorFormInitialValues: values,
-      };
-
-    case SET_TAB_INDEX:
-      const {tabIndex} = action.payload;
-      return {
-          ...state,
-          tabIndex,
       };
 
     default:

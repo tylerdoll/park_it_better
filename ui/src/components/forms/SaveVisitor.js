@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Formik, Form, Field} from 'formik';
 import {Button, FormControl, FormLabel, Input, SimpleGrid} from '@chakra-ui/core';
-import {saveVisitor} from '../../data/actions';
+import {saveVisitor} from '../../data/actions/visitors';
 
 const SaveVisitorForm = (props) => {
   const {onFormSubmit, savingVisitor, initalValues} = props;
@@ -105,7 +105,7 @@ const SaveVisitorForm = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  savingVisitor: state.visitors.savingVisitor,
+  savingVisitor: state.visitors.saving,
   mode: state.visitors.visitorFormMode,
   initalValues: state.visitors.visitorFormInitialValues,
 });

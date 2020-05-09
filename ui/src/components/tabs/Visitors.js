@@ -12,7 +12,13 @@ import {AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogBody, Ale
 import Visitors from '../../containers/VisitorsList';
 import FormModal from '../modals/Form';
 import RoundedButton from '../RoundedButton';
-import {postVisitorsForPermit, setVisitorFormInitialValues, deleteVisitor} from '../../data/actions';
+import {
+  postVisitorsForPermit,
+  setVisitorFormInitialValues,
+  deleteVisitor,
+  toggleForSubmit,
+  clearSubmission
+} from '../../data/actions/visitors';
 
 const getVisitorsToSubmit = (allVisitors, visitorsToSubmit) => {
     return allVisitors.filter((_, i) => visitorsToSubmit.includes(i))
@@ -22,15 +28,17 @@ const VisitorsTab = (props) => {
   const {
     allVisitors,
     visitorsToSubmit,
-    submitVisitorsForPermit,
     postingVisitorsForPermit,
     results,
-    setFormInitialValues,
+    dispatchClearSubmission,
     dispatchDeleteVisitor,
+    dispatchPostVisitorsForPermit,
+    dispatchSetVisitorFormInitialValues,
+    dispatchToggleForSubmit,
   } = props;
 
   const handleEditVisitorClick = (visitor) => {
-    setFormInitialValues(visitor);
+    dispatchSetVisitorFormInitialValues(visitor);
     onOpen();
   };
 
@@ -38,6 +46,13 @@ const VisitorsTab = (props) => {
   const [isDeleteVisitorDialogOpen, setIsDeleteVisitorDialogOpen] = React.useState(false);
   const onDeleteVisitorDialogClose = () => setIsDeleteVisitorDialogOpen(false);
   const cancelRef = React.useRef();
+
+  const handleVisitorClick =  (id) => {
+    if (results.length) {
+      dispatchClearSubmission();
+    }
+    dispatchToggleForSubmit(id);
+  };
 
   const handleDeleteVisitorClick = (visitor) => {
     setIsDeleteVisitorDialogOpen(true);
@@ -47,6 +62,13 @@ const VisitorsTab = (props) => {
     console.log(visitor);
     dispatchDeleteVisitor(visitor["_id"]);
     setIsDeleteVisitorDialogOpen(false);
+  };
+
+  const handleSubmitVisitorsForPermitClick = () => {
+    const visitors = getVisitorsToSubmit(allVisitors, visitorsToSubmit);
+    if (visitors) {
+      dispatchPostVisitorsForPermit(visitors);
+    }
   };
 
   return (
@@ -64,7 +86,7 @@ const VisitorsTab = (props) => {
           alignSelf="center"
           loadingText="Submitting..."
           bg="gray.600"
-          onClick={() => submitVisitorsForPermit(getVisitorsToSubmit(allVisitors, visitorsToSubmit))}
+          onClick={handleSubmitVisitorsForPermitClick}
           isLoading={postingVisitorsForPermit}
           _disabled={{opacity: 1.0, bg: "gray.700", color: "gray.600"}}
         >
@@ -76,6 +98,7 @@ const VisitorsTab = (props) => {
         allVisitors={allVisitors}
         visitorsToSubmit={visitorsToSubmit}
         results={results}
+        onVisitorClick={handleVisitorClick}
         onVisitorEditClick={handleEditVisitorClick}
         onVisitorDeleteClick={handleDeleteVisitorClick}
       />
@@ -121,10 +144,12 @@ const mapStateToProps = (state) => ({
   results: state.visitors.results,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  setFormInitialValues: (values) => dispatch(setVisitorFormInitialValues(values)),
-  submitVisitorsForPermit: (visitors) => visitors && dispatch(postVisitorsForPermit(visitors)),
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  dispatchSetVisitorFormInitialValues: (values) => dispatch(setVisitorFormInitialValues(values)),
+  dispatchPostVisitorsForPermit: (visitors) => dispatch(postVisitorsForPermit(visitors)),
   dispatchDeleteVisitor: (id) => dispatch(deleteVisitor(id)),
+  dispatchClearSubmission: () => dispatch(clearSubmission()),
+  dispatchToggleForSubmit: (id) => dispatch(toggleForSubmit(id)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(VisitorsTab);

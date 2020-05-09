@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {Heading} from '@chakra-ui/core';
-import SaveResidentForm from '../forms/SaveVisitor';
+import SaveResidentForm from '../forms/SaveResident';
 
 const ResidentTab = () => (
   <div>

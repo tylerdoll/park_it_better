@@ -2,11 +2,10 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Formik, Form, Field} from 'formik';
 import {Button, FormControl, FormLabel, Input, SimpleGrid} from '@chakra-ui/core';
-import {saveResident} from '../../data/actions';
+import {saveResident} from '../../data/actions/resident';
 
 const SaveResidentForm = (props) => {
   const {onFormSubmit, savingResident, initalValues} = props;
-    console.log("initalValues", initalValues)
   return (
     <Formik enableReinitialize initialValues={initalValues} onSubmit={(vals, actions) => onFormSubmit(vals)}>
       {(props) => (
@@ -93,8 +92,8 @@ const SaveResidentForm = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  savingResident: state.visitors.savingResident,
-  initalValues: state.visitors.resident,
+  savingResident: state.resident.saving,
+  initalValues: state.resident.fields,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => {

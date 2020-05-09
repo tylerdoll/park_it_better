@@ -9,7 +9,7 @@ import VisitorsTab from './components/tabs/Visitors';
 import NewVisitorTab from './components/tabs/NewVisitor';
 import ResidentTab from './components/tabs/Resident';
 
-import {setTabIndex} from './data/actions';
+import {setTabIndex} from './data/actions/app';
 
 const App = (props) => {
   const {toggleColorMode} = useColorMode();
@@ -77,7 +77,7 @@ const App = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  tabIndex: state.visitors.tabIndex,
+  tabIndex: state.app.tabIndex,
 });
 
 const mapDispatchToProps = (dispatch) => ({

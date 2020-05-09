@@ -4,7 +4,7 @@ import {SlideIn, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButto
 import SaveVisitorForm from '../forms/SaveVisitor';
 
 const FormModal = (props) => {
-  const {isOpen, onClose, btnRef, initalValues} = props;
+  const {isOpen, onClose, btnRef} = props;
 
   return (
     <SlideIn in={isOpen}>
@@ -24,8 +24,4 @@ const FormModal = (props) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  initalValues: state.visitors.visitorFormInitialValues,
-});
-
-export default connect(mapStateToProps, null)(FormModal);
+export default FormModal;

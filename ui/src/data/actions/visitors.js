@@ -1,4 +1,5 @@
-import {get, post, put, del} from '../API';
+import {get, post, put, del} from '../../API';
+import {setTabIndex} from './app';
 
 export const TOGGLE_VISITOR_FOR_SUBMIT = 'TOGGLE_VISITOR_FOR_SUBMIT';
 export const toggleForSubmit = (id) => ({
@@ -12,17 +13,6 @@ export const submitVisitors = (visitors) => ({
   payload: {visitors},
 });
 
-export const REQUEST_RESIDENT = 'REQUEST_RESIDENT';
-export const requestResident = () => ({
-  type: REQUEST_RESIDENT,
-});
-
-export const RECEIVE_RESIDENT = 'RECEIVE_RESIDENT';
-export const receiveResident = (resident) => ({
-  type: RECEIVE_RESIDENT,
-  payload: {resident},
-});
-
 export const REQUEST_VISITORS = 'REQUEST_VISITORS';
 export const requestVisitors = () => ({
   type: REQUEST_VISITORS,
@@ -32,16 +22,6 @@ export const RECEIVE_VISITORS = 'RECEIVE_VISITORS';
 export const receiveVisitors = (json) => ({
   type: RECEIVE_VISITORS,
   payload: {json},
-});
-
-export const SAVING_RESIDENT = 'SAVING_RESIDENT';
-export const savingResident = () => ({
-  type: SAVING_RESIDENT,
-});
-
-export const SAVED_RESIDENT = 'SAVED_RESIDENT';
-export const savedResident = () => ({
-  type: SAVED_RESIDENT,
 });
 
 export const SAVING_VISITOR = 'SAVING_VISITOR';
@@ -86,24 +66,6 @@ export const setVisitorFormInitialValues = (values) => ({
   payload: {values},
 });
 
-export const SET_TAB_INDEX = "SET_TAB_INDEX";
-export const setTabIndex = (tabIndex) => ({
-    type: SET_TAB_INDEX,
-    payload: {tabIndex},
-});
-
-export const saveResident = (resident, onComplete) => (dispatch) => {
-  dispatch(savingResident());
-  post('/resident',
-      resident,
-      (resp) => {
-        dispatch(savedResident());
-        dispatch(fetchResident());
-      },
-      (e) => console.error('Could not save resident', e),
-  ).then(onComplete);
-};
-
 export const saveVisitor = (visitor, onComplete) => (dispatch) => {
   dispatch(savingVisitor());
 
@@ -131,18 +93,6 @@ export const saveVisitor = (visitor, onComplete) => (dispatch) => {
   }
 };
 
-export const fetchResident = () => (dispatch) => {
-  dispatch(requestResident());
-  get('/resident',
-      (response) => response.json(),
-      (e) => console.error('Could not get resident', e),
-  )
-  .then((json) => {
-      console.log('Got resident', json);
-      dispatch(receiveResident(json)); 
-   });
-};
-
 export const fetchVisitors = () => (dispatch) => {
   dispatch(requestVisitors());
 
@@ -156,6 +106,17 @@ export const fetchVisitors = () => (dispatch) => {
   });
 };
 
+export const deleteVisitor = (id) => (dispatch) => {
+  dispatch(deletingVisitor());
+  del(`/visitor/${id}`,
+      (resp) => {
+        dispatch(deletedVisitor());
+        dispatch(fetchVisitors());
+      },
+      (e) => console.error('Could not delete visitor', e),
+  );
+};
+
 export const postVisitorsForPermit = (visitors) => (dispatch) => {
   dispatch(postingVisitorsForPermit());
   post('/visitor/submit',
@@ -166,15 +127,4 @@ export const postVisitorsForPermit = (visitors) => (dispatch) => {
   .then((results) => {
     dispatch(postedVisitorsForPermit(results));
   });
-};
-
-export const deleteVisitor = (id) => (dispatch) => {
-  dispatch(deletingVisitor());
-  del(`/visitor/${id}`,
-      (resp) => {
-        dispatch(deletedVisitor());
-        dispatch(fetchVisitors());
-      },
-      (e) => console.error('Could not delete visitor', e),
-  );
 };

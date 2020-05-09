@@ -2,7 +2,8 @@ import {createStore, applyMiddleware} from 'redux';
 import thunkMiddleware from 'redux-thunk';
 
 import rootReducer from './reducers';
-import {fetchVisitors, fetchResident} from './actions';
+import {fetchResident} from './actions/resident';
+import {fetchVisitors} from './actions/visitors';
 
 const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
 
