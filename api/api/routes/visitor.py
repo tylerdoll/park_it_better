@@ -9,7 +9,7 @@ from flask import Blueprint, current_app, jsonify, request
 # local
 from api.db import get_db
 from api.formats import format_record
-from api.web_driver import create_driver, submit_visitor_info
+from api.park_it_right import create_driver, submit_visitor_info
 
 blueprint = Blueprint("visitor", __name__)
 

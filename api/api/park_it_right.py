@@ -8,6 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 # local
 from api.expected_conditions import element_has_css_class
+from api.exceptions import FieldsMismatchError
 
 _FORM_URL = (
     "https://www.parkitrightpermit.com/park-it-right-contact-visitor-permit-request/"
@@ -59,9 +60,9 @@ def create_driver():
 
 def submit_visitor_info(driver, resident, visitor):
     if not set(resident.keys()).issubset(_RESIDENT_FIELDS):
-        _raise_missing_fields_error(_RESIDENT_FIELDS, resident.keys())
+        raise FieldsMismatchError(_RESIDENT_FIELDS, resident.keys())
     if not set(visitor.keys()).issubset(_VISITOR_FIELDS):
-        _raise_missing_fields_error(_VISITOR_FIELDS, visitor.keys())
+        raise FieldsMismatchError(_VISITOR_FIELDS, visitor.keys())
 
     driver.get(_FORM_URL)
     try:
@@ -108,8 +109,3 @@ def _wait_for_loader_to_stop(driver):
     WebDriverWait(driver, done_loading_timeout_s).until_not(
         EC.presence_of_element_located((By.ID, _LOADER_ID))
     )
-
-
-def _raise_missing_fields_error(expected, got):
-    msg = ["Missing fields", f"expected: {expected}" f"got:      {got}"]
-    raise KeyError("\n".join(msg))
