@@ -1,6 +1,7 @@
 from bson.json_util import dumps
 from json import loads
 
+
 def format_record(mongo_record):
     # Convert to a python dict
     record = dumps(mongo_record)

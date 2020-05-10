@@ -59,9 +59,13 @@ def create_driver():
 
 def submit_visitor_info(driver, resident, visitor):
     if not set(resident.keys()).issubset(_RESIDENT_FIELDS):
-        raise KeyError(f"Missing fields\nwhat provided {resident.keys()}\nwhat was expected: {_RESIDENT_FIELDS}")
+        raise KeyError(
+            f"Missing fields\nwhat provided {resident.keys()}\nwhat was expected: {_RESIDENT_FIELDS}"
+        )
     if not set(visitor.keys()).issubset(_VISITOR_FIELDS):
-        raise KeyError(f"Missing fields\nwhat provided {visitor.keys()}\nwhat was expected: {_VISITOR_FIELDS}")
+        raise KeyError(
+            f"Missing fields\nwhat provided {visitor.keys()}\nwhat was expected: {_VISITOR_FIELDS}"
+        )
 
     driver.get(_FORM_URL)
     try:

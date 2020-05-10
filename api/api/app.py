@@ -11,6 +11,7 @@ from api.error_handlers import (
 )
 from api.routes import resident, visitor
 
+
 def create_app(additional_config=None):
     # Init Flask app
     app = Flask(__name__)

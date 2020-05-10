@@ -5,6 +5,7 @@ import traceback
 # 3rd party
 from selenium.common.exceptions import WebDriverException
 
+
 def handle_io_error(func):
     return _handle_generic_exception(IOError, func)
 
