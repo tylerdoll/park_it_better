@@ -1,5 +1,5 @@
 # 3rd party
-from flask import Flask, request
+from flask import Flask
 from flask_cors import CORS
 
 # local

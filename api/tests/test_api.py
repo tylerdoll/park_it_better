@@ -1,9 +1,4 @@
 from bson.json_util import ObjectId
-from pathlib import Path
-import os
-import uuid
-
-import pytest
 
 from api.db import get_db
 
@@ -96,7 +91,7 @@ def test_save_visitor(app, client):
 
 def test_get_empty_visitors(client):
     resp = client.get("/visitor")
-    assert len(resp.get_json()) is 0
+    assert len(resp.get_json()) == 0
 
 
 def test_get_only_visitor(app, client):
@@ -109,7 +104,7 @@ def test_get_only_visitor(app, client):
         resp = client.get("/visitor")
         resp_data = resp.get_json()
 
-        assert len(resp_data) is 1
+        assert len(resp_data) == 1
         compare_record(visitor, resp_data[0])
 
 

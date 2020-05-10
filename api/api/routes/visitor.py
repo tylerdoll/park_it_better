@@ -18,7 +18,7 @@ blueprint = Blueprint("visitor", __name__)
 def post():
     db = get_db()
     visitor = request.json
-    visitor_id = db.visitors.insert_one(visitor).inserted_id
+    db.visitors.insert_one(visitor).inserted_id
     return "", 201
 
 
@@ -63,7 +63,6 @@ def post_submit_form():
 
     driver = create_driver()
     visitors = request.json
-    fake = request.headers.get("fake", "")
 
     responses = []
     for visitor in visitors:
@@ -75,7 +74,7 @@ def post_submit_form():
         else:
             logging.info(f"Submitting parking info for {visitor}")
             succeeded, msg = submit_visitor_info(driver, resident, fields_to_submit)
-            response = create_response(visitor, succeeded, msg)
+            response = _create_response(visitor, succeeded, msg)
 
         responses.append(response)
         logging.debug(response)
