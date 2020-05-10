@@ -1,11 +1,13 @@
-import React from 'react';
+import React from "react";
 
-import {Heading} from '@chakra-ui/core';
-import SaveResidentForm from '../forms/SaveResident';
+import { Heading } from "@chakra-ui/core";
+import SaveResidentForm from "../forms/SaveResident";
 
 const ResidentTab = () => (
   <div>
-    <Heading size="2xl" mb={2}>Resident</Heading>
+    <Heading size="2xl" mb={2}>
+      Resident
+    </Heading>
     <SaveResidentForm />
   </div>
 );

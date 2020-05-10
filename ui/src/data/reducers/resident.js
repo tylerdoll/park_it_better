@@ -1,4 +1,8 @@
-import {SAVING_RESIDENT, SAVED_RESIDENT, RECEIVE_RESIDENT} from '../actions/resident';
+import {
+  SAVING_RESIDENT,
+  SAVED_RESIDENT,
+  RECEIVE_RESIDENT,
+} from "../actions/resident";
 
 const initialState = {
   saving: false,
@@ -14,7 +18,14 @@ const initialState = {
   },
 };
 
-export default function(state = initialState, action) {
+/**
+ * Reducer for resident data store
+ *
+ * @param {object} state=initialState Initial state of data store
+ * @param {string} action Action to perform
+ * @return {object} New state
+ */
+export default function (state = initialState, action) {
   switch (action.type) {
     case SAVING_RESIDENT:
       return {
@@ -29,7 +40,7 @@ export default function(state = initialState, action) {
       };
 
     case RECEIVE_RESIDENT:
-      const {fields} = action.payload;
+      const { fields } = action.payload;
       return {
         ...state,
         fields,

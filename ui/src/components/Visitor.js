@@ -1,8 +1,16 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import {Checkbox, IconButton, Flex} from '@chakra-ui/core';
+import React from "react";
+import PropTypes from "prop-types";
+import { Checkbox, IconButton, Flex } from "@chakra-ui/core";
 
-const Visitor = ({id, onChange, label, isInvalid, markedForSubmit, onEditClick, onDeleteClick}) => (
+const Visitor = ({
+  id,
+  onChange,
+  label,
+  isInvalid,
+  markedForSubmit,
+  onEditClick,
+  onDeleteClick,
+}) => (
   <Flex align="center" py={3}>
     <Checkbox
       size="lg"
@@ -13,17 +21,21 @@ const Visitor = ({id, onChange, label, isInvalid, markedForSubmit, onEditClick, 
       }}
       value={id}
       isChecked={markedForSubmit}
-    >{label}</Checkbox>
-    <IconButton icon="edit" variant="ghost" onClick={onEditClick}/>
-    <IconButton icon="delete" variant="ghost" onClick={onDeleteClick}/>
+    >
+      {label}
+    </Checkbox>
+    <IconButton icon="edit" variant="ghost" onClick={onEditClick} />
+    <IconButton icon="delete" variant="ghost" onClick={onDeleteClick} />
   </Flex>
 );
 
 Visitor.propTypes = {
   onChange: PropTypes.func.isRequired,
   onEditClick: PropTypes.func.isRequired,
+  onDeleteClick: PropTypes.func.isRequired,
   label: PropTypes.string.isRequired,
   id: PropTypes.number.isRequired,
+  markedForSubmit: PropTypes.bool.isRequired,
   isInvalid: PropTypes.bool,
 };
 

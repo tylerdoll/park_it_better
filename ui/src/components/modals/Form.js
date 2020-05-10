@@ -1,10 +1,20 @@
-import React from 'react';
-import {connect} from 'react-redux';
-import {SlideIn, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody} from '@chakra-ui/core';
-import SaveVisitorForm from '../forms/SaveVisitor';
+import React from "react";
+import PropTypes from "prop-types";
+
+import {
+  SlideIn,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+} from "@chakra-ui/core";
+
+import SaveVisitorForm from "../forms/SaveVisitor";
 
 const FormModal = (props) => {
-  const {isOpen, onClose, btnRef} = props;
+  const { isOpen, onClose, btnRef } = props;
 
   return (
     <SlideIn in={isOpen}>
@@ -22,6 +32,12 @@ const FormModal = (props) => {
       )}
     </SlideIn>
   );
+};
+
+FormModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  btnRef: PropTypes.object.isRequired,
 };
 
 export default FormModal;

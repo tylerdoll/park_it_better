@@ -1,4 +1,4 @@
-import {v4 as uuid4} from 'uuid';
+import { v4 as uuid4 } from "uuid";
 
 import {
   CLEAR_SUBMISSION,
@@ -15,7 +15,7 @@ import {
   MARK_INVALID_VISITORS,
   OPEN_DELETE_VISITOR_DIALOG,
   CLOSE_DELETE_VISITOR_DIALOG,
-} from '../actions/visitors';
+} from "../actions/visitors";
 
 const initialState = {
   allVisitors: [],
@@ -28,27 +28,34 @@ const initialState = {
     visitorId: null,
   },
   visitorFormInitialValues: {
-      'visitor-first-name': '',
-      'visitor-last-name': '',
-      'visitor-phone': '',
-      'visitor-year': '',
-      'visitor-make': '',
-      'visitor-model': '',
-      'visitor-color': '',
-      'visitor-license-plate-number': '',
-      'visitor-state-of-issuance': '',
-      'visitor-email': 'email@address.com',
-      'visitor-address': 'n/a',
-      'visitor-apt-number': 'n/a',
-      'visitor-city': 'n/a',
-      'visitor-zip': 'n/a',
+    "visitor-first-name": "",
+    "visitor-last-name": "",
+    "visitor-phone": "",
+    "visitor-year": "",
+    "visitor-make": "",
+    "visitor-model": "",
+    "visitor-color": "",
+    "visitor-license-plate-number": "",
+    "visitor-state-of-issuance": "",
+    "visitor-email": "email@address.com",
+    "visitor-address": "n/a",
+    "visitor-apt-number": "n/a",
+    "visitor-city": "n/a",
+    "visitor-zip": "n/a",
   },
 };
 
-export default function(state = initialState, action) {
+/**
+ * Reducer for the visitors data store
+ *
+ * @param {Object} state=initialState Inital state of visitor data store
+ * @param {string} action Action to perform
+ * @return {Object} New state
+ */
+export default function (state = initialState, action) {
   switch (action.type) {
     case RECEIVE_VISITORS:
-      const {json} = action.payload;
+      const { json } = action.payload;
       return {
         ...state,
         invalidVisitors: [],
@@ -76,16 +83,20 @@ export default function(state = initialState, action) {
     }
 
     case SHOW_TOASTS: {
-      const {results} = action.payload;
+      const { results } = action.payload;
 
       const toasts = results.map((result) => {
-        const {visitor} = result;
-        const name = `${visitor['visitor-first-name']} ${visitor['visitor-last-name']}`;
+        const { visitor } = result;
+        const firstName = visitor["visitor-first-name"];
+        const lastName = visitor["visitor-last-name"];
+        const name = `${firstName} ${lastName}`;
+        const successTitle = `Successfully submit ${name}`;
+        const failTitle = `Failed to submit ${name}`;
         return {
           id: uuid4(),
-          title: result.succeeded ? `Successfully submit ${name}` : `Failed to submit ${name}`,
+          title: result.succeeded ? successTitle : failTitle,
           description: result.response,
-          status: result.succeeded ? 'success' : 'error',
+          status: result.succeeded ? "success" : "error",
         };
       });
 
@@ -96,7 +107,7 @@ export default function(state = initialState, action) {
     }
 
     case MARK_INVALID_VISITORS: {
-      const {results} = action.payload;
+      const { results } = action.payload;
 
       const invalidVisitors = results
         .filter((result) => !result.succeeded)
@@ -121,7 +132,7 @@ export default function(state = initialState, action) {
       };
 
     case TOGGLE_VISITOR_FOR_SUBMIT:
-      const {id} = action.payload;
+      const { id } = action.payload;
       if (state.visitorsToSubmit.includes(id)) {
         return {
           ...state,
@@ -142,15 +153,15 @@ export default function(state = initialState, action) {
       };
 
     case SET_VISITOR_FORM_INITIAL_VALUES:
-      const {values} = action.payload;
+      const { values } = action.payload;
       return {
         ...state,
         visitorFormInitialValues: values,
       };
 
     case REMOVE_TOAST: {
-      const {id} = action.payload;
-      const toasts = state.toasts.filter((toast) => toast.id != id);
+      const { id } = action.payload;
+      const toasts = state.toasts.filter((toast) => toast.id !== id);
       return {
         ...state,
         toasts,
@@ -158,7 +169,7 @@ export default function(state = initialState, action) {
     }
 
     case OPEN_DELETE_VISITOR_DIALOG: {
-      const {visitorId} = action.payload;
+      const { visitorId } = action.payload;
       const deleteVisitorDialog = {
         ...state.deleteVisitorDialog,
         isOpen: true,

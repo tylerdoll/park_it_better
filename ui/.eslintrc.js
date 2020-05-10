@@ -6,6 +6,7 @@ module.exports = {
   'extends': [
     'plugin:react/recommended',
     'google',
+    'prettier',
   ],
   'globals': {
     'Atomics': 'readonly',
@@ -20,7 +21,9 @@ module.exports = {
   },
   'plugins': [
     'react',
+    'prettier',
   ],
   'rules': {
+    'prettier/prettier': 'error',
   },
 };

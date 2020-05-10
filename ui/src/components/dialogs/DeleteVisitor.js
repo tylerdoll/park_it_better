@@ -1,5 +1,6 @@
-import React from 'react';
-import {connect} from 'react-redux';
+import React from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
 import {
   AlertDialog,
@@ -8,10 +9,13 @@ import {
   AlertDialogBody,
   AlertDialogHeader,
   AlertDialogOverlay,
-  Button
-} from '@chakra-ui/core';
+  Button,
+} from "@chakra-ui/core";
 
-import {deleteVisitor, closeDeleteVisitorDialog} from '../../data/actions/visitors';
+import {
+  deleteVisitor,
+  closeDeleteVisitorDialog,
+} from "../../data/actions/visitors";
 
 const DeleteVisitorDialog = React.forwardRef((props, ref) => {
   const {
@@ -37,7 +41,7 @@ const DeleteVisitorDialog = React.forwardRef((props, ref) => {
         </AlertDialogHeader>
 
         <AlertDialogBody>
-          Are you sure? You can't undo this action afterwards.
+          Are you sure? You cannot undo this action afterwards.
         </AlertDialogBody>
 
         <AlertDialogFooter>
@@ -52,6 +56,14 @@ const DeleteVisitorDialog = React.forwardRef((props, ref) => {
     </AlertDialog>
   );
 });
+DeleteVisitorDialog.displayName = "DeleteVisitorDialog";
+
+DeleteVisitorDialog.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  visitorId: PropTypes.string.isRequired,
+  dispatchCloseDeleteVisitorDialog: PropTypes.func.isRequired,
+  dispatchDeleteVisitor: PropTypes.func.isRequired,
+};
 
 const mapStateToProps = (state) => ({
   isOpen: state.visitors.deleteVisitorDialog.isOpen,
@@ -63,4 +75,7 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchDeleteVisitor: (id) => dispatch(deleteVisitor(id)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DeleteVisitorDialog);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DeleteVisitorDialog);

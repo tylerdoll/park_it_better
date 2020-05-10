@@ -1,88 +1,105 @@
-import React from 'react';
-import {connect} from 'react-redux';
-import {Formik, Form, Field} from 'formik';
-import {Button, FormControl, FormLabel, Input, SimpleGrid} from '@chakra-ui/core';
-import {saveVisitor} from '../../data/actions/visitors';
+import React from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+
+import { Formik, Form, Field } from "formik";
+
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  SimpleGrid,
+} from "@chakra-ui/core";
+
+import { saveVisitor } from "../../data/actions/visitors";
 
 const SaveVisitorForm = (props) => {
-  const {onFormSubmit, savingVisitor, initalValues} = props;
+  const { onFormSubmit, savingVisitor, initalValues } = props;
   return (
-    <Formik initialValues={initalValues} onSubmit={(vals, actions) => onFormSubmit(vals)}>
+    <Formik
+      initialValues={initalValues}
+      onSubmit={(vals, actions) => onFormSubmit(vals)}
+    >
       {(props) => (
         <Form>
-          <SimpleGrid columns={{sm: 1, md: 2}} spacing={4}>
-              <Field name="visitor-first-name">
-                {({field, form}) => (
-                  <FormControl>
-                    <FormLabel htmlFor="visitor-first-name">First name</FormLabel>
-                    <Input {...field} placeholder="Alex" />
-                  </FormControl>
-                )}
-              </Field>
-              <Field name="visitor-last-name">
-                {({field, form}) => (
-                  <FormControl>
-                    <FormLabel htmlFor="visitor-last-name">Last name</FormLabel>
-                    <Input {...field} placeholder="Jones" />
-                  </FormControl>
-                )}
-              </Field>
-              <Field name="visitor-phone" type="tel">
-                {({field, form}) => (
-                  <FormControl>
-                    <FormLabel htmlFor="visitor-phone">Phone</FormLabel>
-                    <Input {...field} placeholder="555-555-5555" />
-                  </FormControl>
-                )}
-              </Field>
-              <Field name="visitor-year" type="number">
-                {({field, form}) => (
-                  <FormControl>
-                    <FormLabel htmlFor="visitor-year">Vehicle year</FormLabel>
-                    <Input {...field} placeholder="1337" />
-                  </FormControl>
-                )}
-              </Field>
-              <Field name="visitor-make">
-                {({field, form}) => (
-                  <FormControl>
-                    <FormLabel htmlFor="visitor-make">Vehicle make</FormLabel>
-                    <Input {...field} placeholder="Rolls Royce" />
-                  </FormControl>
-                )}
-              </Field>
-              <Field name="visitor-model">
-                {({field, form}) => (
-                  <FormControl>
-                    <FormLabel htmlFor="visitor-model">Vehicle model</FormLabel>
-                    <Input {...field} placeholder="Phantom" />
-                  </FormControl>
-                )}
-              </Field>
-              <Field name="visitor-color">
-                {({field, form}) => (
-                  <FormControl>
-                    <FormLabel htmlFor="visitor-color">Vehicle color</FormLabel>
-                    <Input {...field} placeholder="Mother of pearl" />
-                  </FormControl>
-                )}
-              </Field>
-              <Field name="visitor-license-plate-number">
-                {({field, form}) => (
-                  <FormControl>
-                    <FormLabel htmlFor="visitor-license-plate-number">Vehicle license plate number (no spaces or dashes)</FormLabel>
-                    <Input {...field} placeholder="MONEYBAGS" />
-                  </FormControl>
-                )}
-              </Field>
-              <Field name="visitor-state-of-issuance">
-                {({field, form}) => (
-                  <FormControl>
-                    <FormLabel htmlFor="visitor-state-of-issuance">Vehicle state of issuance</FormLabel>
-                    <Input {...field} placeholder="CA" />
-                  </FormControl>
-                )}
-              </Field>
+          <SimpleGrid columns={{ sm: 1, md: 2 }} spacing={4}>
+            <Field name="visitor-first-name">
+              {({ field, form }) => (
+                <FormControl>
+                  <FormLabel htmlFor="visitor-first-name">First name</FormLabel>
+                  <Input {...field} placeholder="Alex" />
+                </FormControl>
+              )}
+            </Field>
+            <Field name="visitor-last-name">
+              {({ field, form }) => (
+                <FormControl>
+                  <FormLabel htmlFor="visitor-last-name">Last name</FormLabel>
+                  <Input {...field} placeholder="Jones" />
+                </FormControl>
+              )}
+            </Field>
+            <Field name="visitor-phone" type="tel">
+              {({ field, form }) => (
+                <FormControl>
+                  <FormLabel htmlFor="visitor-phone">Phone</FormLabel>
+                  <Input {...field} placeholder="555-555-5555" />
+                </FormControl>
+              )}
+            </Field>
+            <Field name="visitor-year" type="number">
+              {({ field, form }) => (
+                <FormControl>
+                  <FormLabel htmlFor="visitor-year">Vehicle year</FormLabel>
+                  <Input {...field} placeholder="1337" />
+                </FormControl>
+              )}
+            </Field>
+            <Field name="visitor-make">
+              {({ field, form }) => (
+                <FormControl>
+                  <FormLabel htmlFor="visitor-make">Vehicle make</FormLabel>
+                  <Input {...field} placeholder="Rolls Royce" />
+                </FormControl>
+              )}
+            </Field>
+            <Field name="visitor-model">
+              {({ field, form }) => (
+                <FormControl>
+                  <FormLabel htmlFor="visitor-model">Vehicle model</FormLabel>
+                  <Input {...field} placeholder="Phantom" />
+                </FormControl>
+              )}
+            </Field>
+            <Field name="visitor-color">
+              {({ field, form }) => (
+                <FormControl>
+                  <FormLabel htmlFor="visitor-color">Vehicle color</FormLabel>
+                  <Input {...field} placeholder="Mother of pearl" />
+                </FormControl>
+              )}
+            </Field>
+            <Field name="visitor-license-plate-number">
+              {({ field, form }) => (
+                <FormControl>
+                  <FormLabel htmlFor="visitor-license-plate-number">
+                    Vehicle license plate number (no spaces or dashes)
+                  </FormLabel>
+                  <Input {...field} placeholder="MONEYBAGS" />
+                </FormControl>
+              )}
+            </Field>
+            <Field name="visitor-state-of-issuance">
+              {({ field, form }) => (
+                <FormControl>
+                  <FormLabel htmlFor="visitor-state-of-issuance">
+                    Vehicle state of issuance
+                  </FormLabel>
+                  <Input {...field} placeholder="CA" />
+                </FormControl>
+              )}
+            </Field>
           </SimpleGrid>
           <Field name="visitor-email" type="hidden"></Field>
           <Field name="visitor-address" type="hidden"></Field>
@@ -102,6 +119,12 @@ const SaveVisitorForm = (props) => {
       )}
     </Formik>
   );
+};
+
+SaveVisitorForm.propTypes = {
+  onFormSubmit: PropTypes.func.isRequired,
+  savingVisitor: PropTypes.bool.isRequired,
+  initalValues: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
