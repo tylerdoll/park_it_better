@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
@@ -8,9 +8,11 @@ import {
   ColorModeProvider,
   useColorMode,
 } from "@chakra-ui/core";
-import { Tabs, TabList, Tab, TabPanels, TabPanel } from "@chakra-ui/core";
-import { Icon } from "@chakra-ui/core";
+import { Tabs, TabList, TabPanels, TabPanel } from "@chakra-ui/core";
 
+import { FaList, FaPlus, FaHome } from "react-icons/fa";
+
+import IconTab from "./components/IconTab";
 import VisitorsTab from "./components/tabs/Visitors";
 import NewVisitorTab from "./components/tabs/NewVisitor";
 import ResidentTab from "./components/tabs/Resident";
@@ -23,37 +25,7 @@ const App = (props) => {
 
   const { tabIndex, setTabIndex } = props;
 
-  console.log("Tab index is ", tabIndex);
-
   const handleTabsChange = (index) => setTabIndex(index);
-
-  const IconTab = forwardRef((props, ref) => {
-    const { label, icon, color, isSelected } = props;
-    return (
-      <Tab
-        ref={ref}
-        isSelected={isSelected}
-        flex={1}
-        p={0}
-        {...props}
-        _selected={{}}
-      >
-        <Icon
-          aria-label={label}
-          name={icon}
-          color={isSelected ? color : "white"}
-          size="32px"
-        />
-      </Tab>
-    );
-  });
-  IconTab.propTypes = {
-    label: PropTypes.string.isRequired,
-    icon: PropTypes.string.isRequired,
-    color: PropTypes.string.isRequired,
-    isSelected: PropTypes.bool.isRequired,
-  };
-  IconTab.displayName = "IconTab";
 
   return (
     <ThemeProvider>
@@ -97,9 +69,9 @@ const App = (props) => {
             left={0}
             right={0}
           >
-            <IconTab label="Visitors" icon="check-circle" color="green.200" />
-            <IconTab label="Add visitor" icon="add" color="blue.200" />
-            <IconTab label="Resident" icon="settings" color="red.200" />
+            <IconTab label="Visitors" icon={FaList} color="green.200" />
+            <IconTab label="Add visitor" icon={FaPlus} color="blue.200" />
+            <IconTab label="Resident" icon={FaHome} color="red.200" />
           </TabList>
         </Tabs>
       </ColorModeProvider>
