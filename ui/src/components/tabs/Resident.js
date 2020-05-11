@@ -1,15 +1,13 @@
 import React from "react";
 
-import { Heading } from "@chakra-ui/core";
+import { Heading, Stack } from "@chakra-ui/core";
 import SaveResidentForm from "../forms/SaveResident";
 
 const ResidentTab = () => (
-  <div>
-    <Heading size="2xl" mb={2}>
-      Resident
-    </Heading>
+  <Stack spacing={4}>
+    <Heading size="2xl">Resident</Heading>
     <SaveResidentForm />
-  </div>
+  </Stack>
 );
 
 export default ResidentTab;
