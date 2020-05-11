@@ -10,12 +10,13 @@ import {
 } from "@chakra-ui/core";
 import { Tabs, TabList, TabPanels, TabPanel } from "@chakra-ui/core";
 
-import { FaList, FaPlus, FaHome } from "react-icons/fa";
+import { FaList, FaPlus, FaHome, FaHistory } from "react-icons/fa";
 
 import IconTab from "./components/IconTab";
 import VisitorsTab from "./components/tabs/Visitors";
 import NewVisitorTab from "./components/tabs/NewVisitor";
 import ResidentTab from "./components/tabs/Resident";
+import HistoryTab from "./components/tabs/History";
 
 import { setTabIndex } from "./data/actions/app";
 
@@ -57,6 +58,9 @@ const App = (props) => {
             <TabPanel>
               <ResidentTab />
             </TabPanel>
+            <TabPanel>
+              <HistoryTab />
+            </TabPanel>
           </TabPanels>
 
           <TabList
@@ -72,6 +76,7 @@ const App = (props) => {
             <IconTab label="Visitors" icon={FaList} color="green.200" />
             <IconTab label="Add visitor" icon={FaPlus} color="blue.200" />
             <IconTab label="Resident" icon={FaHome} color="red.200" />
+            <IconTab label="History" icon={FaHistory} color="yellow.200" />
           </TabList>
         </Tabs>
       </ColorModeProvider>

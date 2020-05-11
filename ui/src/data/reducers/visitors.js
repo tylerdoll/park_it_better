@@ -43,12 +43,50 @@ const initialState = {
     "visitor-city": "n/a",
     "visitor-zip": "n/a",
   },
+  history: [
+    {
+      date: "Mon Feb 4 2020",
+      visitors: [
+        "James Joe",
+        "Kyle Clark",
+        "Tabitha Jones",
+        "John Stamos",
+        "John Stamos",
+        "John Stamos",
+      ],
+    },
+    {
+      date: "Mon Jan 20 2020",
+      visitors: ["Chris James"],
+    },
+    {
+      date: "Mon Jan 20 2020",
+      visitors: [
+        "Chris James",
+        "Kyle Clark",
+        "Tabitha Jones",
+        "John Stamos",
+        "John Stamos",
+        "John Stamos",
+      ],
+    },
+    {
+      date: "Mon Jan 20 2020",
+      visitors: [
+        "Chris James",
+        "Tabitha Jones",
+        "Kyle Clark",
+        "Tabitha Jones",
+        "John Stamos",
+      ],
+    },
+  ],
 };
 
 /**
  * Reducer for the visitors data store
  *
- * @param {Object} state=initialState Inital state of visitor data store
+ * @param {Object} state=initialState Inital state of data store
  * @param {string} action Action to perform
  * @return {Object} New state
  */
