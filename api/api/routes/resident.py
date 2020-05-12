@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 
 from api.db import get_db
-from api.formats import format_record
+from api.formats import format_generic_record
 
 blueprint = Blueprint("resident", __name__)
 
@@ -29,4 +29,4 @@ def get():
     if resident is None:
         return "", 404
     else:
-        return jsonify(format_record(resident))
+        return jsonify(format_generic_record(resident))

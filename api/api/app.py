@@ -9,7 +9,7 @@ from api.error_handlers import (
     handle_runtime_error,
     handle_selenium_errors,
 )
-from api.routes import resident, visitor
+from api.routes import history, resident, visitor
 
 
 def create_app(additional_config=None):
@@ -28,6 +28,7 @@ def create_app(additional_config=None):
     db.init_app(app)
 
     # Blueprints
+    app.register_blueprint(history.blueprint)
     app.register_blueprint(resident.blueprint)
     app.register_blueprint(visitor.blueprint)
 

@@ -8,7 +8,7 @@ from flask import Blueprint, current_app, jsonify, request
 
 # local
 from api.db import get_db
-from api.formats import format_record
+from api.formats import format_generic_record
 from api.park_it_right import create_driver, submit_visitor_info
 
 blueprint = Blueprint("visitor", __name__)
@@ -25,7 +25,7 @@ def post():
 @blueprint.route("/visitor")
 def get():
     db = get_db()
-    visitors = [format_record(v) for v in db.visitors.find()]
+    visitors = [format_generic_record(v) for v in db.visitors.find()]
     return jsonify(visitors)
 
 
