@@ -11,6 +11,7 @@ def format_generic_record(record):
 
     return record
 
+
 def format_history_date(date):
     return date.strftime("%A, %B %d, %Y")
 

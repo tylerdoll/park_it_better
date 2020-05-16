@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 
 from api.db import get_db
 from api.formats import format_generic_record, format_history_date
+from api.routes.history import add_to_history
 
 
 def create_dummy_resident():
@@ -164,47 +165,29 @@ def test_history(app, client):
     with app.app_context():
         db = get_db()
 
+        # Check that history is empty
         resp = client.get("/history")
         assert resp.status_code == 200
         assert resp.get_json() == []
 
+        # Check that the api can retrieve records
         visitors = [
-            create_dummy_visitor("mike", "jones"),        
-            create_dummy_visitor("carl", "clarkson"),        
-            create_dummy_visitor("sean", "dew"),        
+            create_dummy_visitor("mike", "jones"),
+            create_dummy_visitor("carl", "clarkson"),
+            create_dummy_visitor("sean", "dew"),
         ]
         db.visitors.insert_many(visitors)
-
-        times = [
-            datetime.now(),
-            datetime.now() - timedelta(3),
-        ]
-        records = [
-            {
-                "timestamp": times[0].timestamp(),
-                "visitor": visitors[0],
-            },
-            {
-                "timestamp": times[0].timestamp(),
-                "visitor": visitors[1],
-            },
-            {
-                "timestamp": times[1].timestamp(),
-                "visitor": visitors[2],
-            },
-        ]
-        db.history.insert_many(records)
-
+        times = [datetime.now(), datetime.now() - timedelta(3)]
+        add_to_history(visitors[0], times[0].timestamp())
+        add_to_history(visitors[1], times[0].timestamp())
+        add_to_history(visitors[2], times[1].timestamp())
         visitors = [format_generic_record(visitor) for visitor in visitors]
         expected_response = [
             {
                 "date": format_history_date(times[0]),
                 "visitors": [visitors[0], visitors[1]],
             },
-            {
-                "date": format_history_date(times[1]),
-                "visitors": [visitors[2]],
-            },
+            {"date": format_history_date(times[1]), "visitors": [visitors[2]]},
         ]
         resp = client.get("/history")
         assert resp.status_code == 200

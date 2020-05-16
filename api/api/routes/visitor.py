@@ -10,6 +10,7 @@ from flask import Blueprint, current_app, jsonify, request
 from api.db import get_db
 from api.formats import format_generic_record
 from api.park_it_right import create_driver, submit_visitor_info
+from api.routes.history import add_to_history
 
 blueprint = Blueprint("visitor", __name__)
 
@@ -78,6 +79,9 @@ def post_submit_form():
 
         responses.append(response)
         logging.debug(response)
+
+        if response["successful"]:
+            add_to_history(visitor)
 
     return jsonify(responses)
 

@@ -1,5 +1,8 @@
+# std
+from datetime import datetime
+
 # 3rd party
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify
 
 # local
 from api.db import get_db
@@ -14,3 +17,8 @@ def get():
     records = db.history.find()
     formatted_history = format_history(records)
     return jsonify(formatted_history)
+
+
+def add_to_history(visitor, timestamp=datetime.now().timestamp()):
+    db = get_db()
+    db.history.insert_one({"timestamp": timestamp, "visitor": visitor})
