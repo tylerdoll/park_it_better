@@ -7,7 +7,7 @@ import "../../styles.css";
 
 import { useDisclosure } from "@chakra-ui/core";
 import { Flex } from "@chakra-ui/core";
-import { Heading, Stack } from "@chakra-ui/core";
+import { Heading } from "@chakra-ui/core";
 import { useToast } from "@chakra-ui/core";
 
 import VisitorsList from "../VisitorsList";
