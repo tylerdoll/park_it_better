@@ -31,7 +31,7 @@ const VisitorsTab = (props) => {
     allVisitors,
     invalidVisitors,
     visitorsToSubmit,
-    postingVisitorsForPermit,
+    postingForPermit,
     toasts,
     dispatchPostVisitorsForPermit,
     dispatchRemoveToast,
@@ -94,7 +94,7 @@ const VisitorsTab = (props) => {
           loadingText="Submitting..."
           bg="gray.600"
           onClick={handleSubmitVisitorsForPermitClick}
-          isLoading={postingVisitorsForPermit}
+          isLoading={postingForPermit}
           _disabled={{ opacity: 1.0, bg: "gray.700", color: "gray.600" }}
         >
           Submit for permit
@@ -112,7 +112,7 @@ const VisitorsTab = (props) => {
 
       <FormModal isOpen={isOpen} onClose={onClose} />
 
-      <DeleteVisitorDialog ref={cancelRef} />
+      <DeleteVisitorDialog cancelRef={cancelRef} />
     </Flex>
   );
 };
@@ -121,21 +121,20 @@ VisitorsTab.propTypes = {
   allVisitors: PropTypes.array.isRequired,
   invalidVisitors: PropTypes.array.isRequired,
   visitorsToSubmit: PropTypes.array.isRequired,
-  postingVisitorsForPermit: PropTypes.bool.isRequired,
+  postingForPermit: PropTypes.bool.isRequired,
   toasts: PropTypes.array.isRequired,
   dispatchToggleForSubmit: PropTypes.func.isRequired,
   dispatchPostVisitorsForPermit: PropTypes.func.isRequired,
   dispatchSetVisitorFormInitialValues: PropTypes.func.isRequired,
   dispatchOpenDeleteVisitorDialog: PropTypes.func.isRequired,
   dispatchRemoveToast: PropTypes.func.isRequired,
-  dispatchDeleteVisitor: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   allVisitors: state.visitors.allVisitors,
   invalidVisitors: state.visitors.invalidVisitors,
   visitorsToSubmit: state.visitors.visitorsToSubmit,
-  postingVisitorsForPermit: state.visitors.postingVisitorsForPermit,
+  postingForPermit: state.visitors.postingForPermit,
   toasts: state.visitors.toasts,
 });
 

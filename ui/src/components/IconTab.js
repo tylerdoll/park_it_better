@@ -25,9 +25,9 @@ const IconTab = forwardRef((props, ref) => {
 });
 IconTab.propTypes = {
   label: PropTypes.string.isRequired,
-  icon: PropTypes.string.isRequired,
+  icon: PropTypes.func.isRequired,
   color: PropTypes.string.isRequired,
-  isSelected: PropTypes.bool.isRequired,
+  isSelected: PropTypes.bool,
 };
 IconTab.displayName = "IconTab";
 

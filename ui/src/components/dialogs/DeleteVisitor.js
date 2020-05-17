@@ -17,12 +17,13 @@ import {
   closeDeleteVisitorDialog,
 } from "../../data/actions/visitors";
 
-const DeleteVisitorDialog = React.forwardRef((props, ref) => {
+const DeleteVisitorDialog = (props) => {
   const {
     isOpen,
     visitorId,
     dispatchCloseDeleteVisitorDialog,
     dispatchDeleteVisitor,
+    cancelRef,
   } = props;
 
   const handleOnClose = () => dispatchCloseDeleteVisitorDialog();
@@ -31,7 +32,7 @@ const DeleteVisitorDialog = React.forwardRef((props, ref) => {
   return (
     <AlertDialog
       isOpen={isOpen}
-      leastDestructiveRef={ref}
+      leastDestructiveRef={cancelRef}
       onClose={handleOnClose}
     >
       <AlertDialogOverlay />
@@ -45,7 +46,7 @@ const DeleteVisitorDialog = React.forwardRef((props, ref) => {
         </AlertDialogBody>
 
         <AlertDialogFooter>
-          <Button ref={ref} onClick={handleOnClose}>
+          <Button ref={cancelRef} onClick={handleOnClose}>
             Cancel
           </Button>
           <Button variantColor="red" onClick={handleOnDeleteClick} ml={3}>
@@ -55,14 +56,15 @@ const DeleteVisitorDialog = React.forwardRef((props, ref) => {
       </AlertDialogContent>
     </AlertDialog>
   );
-});
+};
 DeleteVisitorDialog.displayName = "DeleteVisitorDialog";
 
 DeleteVisitorDialog.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  visitorId: PropTypes.string.isRequired,
+  visitorId: PropTypes.string,
   dispatchCloseDeleteVisitorDialog: PropTypes.func.isRequired,
   dispatchDeleteVisitor: PropTypes.func.isRequired,
+  cancelRef: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({

@@ -14,12 +14,12 @@ import {
 import SaveVisitorForm from "../forms/SaveVisitor";
 
 const FormModal = (props) => {
-  const { isOpen, onClose, btnRef } = props;
+  const { isOpen, onClose } = props;
 
   return (
     <SlideIn in={isOpen}>
       {(styles) => (
-        <Modal finalFocusRef={btnRef} onClose={onClose} isOpen={true}>
+        <Modal onClose={onClose} isOpen={true}>
           <ModalOverlay opacity={styles.opacity} />
           <ModalContent pb={5} {...styles} rounded="md">
             <ModalHeader>Edit Visitor</ModalHeader>
@@ -37,7 +37,6 @@ const FormModal = (props) => {
 FormModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  btnRef: PropTypes.object.isRequired,
 };
 
 export default FormModal;

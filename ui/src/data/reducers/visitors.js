@@ -24,6 +24,7 @@ const initialState = {
   invalidVisitors: [],
   toasts: [],
   saving: false,
+  postingForPermit: false,
   deleteVisitorDialog: {
     isOpen: false,
     visitorId: null,
@@ -66,13 +67,13 @@ export default function (state = initialState, action) {
     case POSTING_VISITORS_FOR_PERMIT:
       return {
         ...state,
-        postingVisitorsForPermit: true,
+        postingForPermit: true,
       };
 
     case POSTED_VISITORS_FOR_PERMIT: {
       return {
         ...state,
-        postingVisitorsForPermit: false,
+        postingForPermit: false,
       };
     }
 
