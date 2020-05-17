@@ -18,6 +18,7 @@ import {
 } from "../actions/visitors";
 
 const initialState = {
+  history: [],
   allVisitors: [],
   visitorsToSubmit: [],
   invalidVisitors: [],
@@ -43,44 +44,6 @@ const initialState = {
     "visitor-city": "n/a",
     "visitor-zip": "n/a",
   },
-  history: [
-    {
-      date: "Mon Feb 4 2020",
-      visitors: [
-        "James Joe",
-        "Kyle Clark",
-        "Tabitha Jones",
-        "John Stamos",
-        "John Stamos",
-        "John Stamos",
-      ],
-    },
-    {
-      date: "Mon Jan 20 2020",
-      visitors: ["Chris James"],
-    },
-    {
-      date: "Mon Jan 20 2020",
-      visitors: [
-        "Chris James",
-        "Kyle Clark",
-        "Tabitha Jones",
-        "John Stamos",
-        "John Stamos",
-        "John Stamos",
-      ],
-    },
-    {
-      date: "Mon Jan 20 2020",
-      visitors: [
-        "Chris James",
-        "Tabitha Jones",
-        "Kyle Clark",
-        "Tabitha Jones",
-        "John Stamos",
-      ],
-    },
-  ],
 };
 
 /**

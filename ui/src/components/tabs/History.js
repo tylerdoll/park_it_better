@@ -2,15 +2,12 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import { Heading, Stack } from "@chakra-ui/core";
+import { Heading, Stack, Text } from "@chakra-ui/core";
 import { List, ListItem } from "@chakra-ui/core";
 
-const HistoryTab = (props) => {
-  const { history } = props;
-
-  return (
-    <Stack spacing={4}>
-      <Heading size="2xl">History</Heading>
+const renderHistory = (history) => {
+  if (history && history.length > 0) {
+    return (
       <Stack spacing={6} shouldWrapChildren={true}>
         {history.map((day, i) => (
           <div key={i}>
@@ -25,9 +22,18 @@ const HistoryTab = (props) => {
           </div>
         ))}
       </Stack>
-    </Stack>
-  );
+    );
+  } else {
+    return <Text>No history to display</Text>;
+  }
 };
+
+const HistoryTab = (props) => (
+  <Stack spacing={4}>
+    <Heading size="2xl">History</Heading>
+    {renderHistory(props.history)}
+  </Stack>
+);
 
 HistoryTab.propTypes = {
   history: PropTypes.array.isRequired,
