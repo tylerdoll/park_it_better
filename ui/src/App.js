@@ -16,9 +16,9 @@ import HistoryTab from "./components/tabs/History";
 import { setTabIndex } from "./data/actions/app";
 
 const App = (props) => {
-  const { tabIndex, setTabIndex } = props;
+  const { tabIndex, dispatchSetTabIndex } = props;
 
-  const handleTabsChange = (index) => setTabIndex(index);
+  const handleTabsChange = (index) => dispatchSetTabIndex(index);
 
   return (
     <ThemeProvider>
@@ -79,7 +79,7 @@ const App = (props) => {
 
 App.propTypes = {
   tabIndex: PropTypes.number.isRequired,
-  setTabIndex: PropTypes.func.isRequired,
+  dispatchSetTabIndex: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -87,7 +87,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  setTabIndex: (index) => dispatch(setTabIndex(index)),
+  dispatchSetTabIndex: (index) => dispatch(setTabIndex(index)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

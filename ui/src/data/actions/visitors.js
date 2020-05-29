@@ -1,5 +1,6 @@
 import { get, post, put, del } from "../../API";
 import { setTabIndex } from "./app";
+import { fetchHistory } from "./history";
 
 export const TOGGLE_VISITOR_FOR_SUBMIT = "TOGGLE_VISITOR_FOR_SUBMIT";
 export const toggleForSubmit = (id) => ({
@@ -126,7 +127,9 @@ export const fetchVisitors = () => (dispatch) => {
   get(
     "/visitor",
     (response) => response.json(),
-    (e) => console.error("Could not get visitors", e)
+    (e) => {
+      throw Error(`Could not get visitors ${e}`);
+    }
   ).then((json) => {
     console.log("Got visitors", json);
     dispatch(receiveVisitors(json));
@@ -141,21 +144,26 @@ export const deleteVisitor = (id) => (dispatch) => {
       dispatch(closeDeleteVisitorDialog());
       dispatch(fetchVisitors());
     },
-    (e) => console.error("Could not delete visitor", e)
+    (e) => {
+      throw Error(`Could not delete visitor ${e}`);
+    }
   );
 };
 
 export const postVisitorsForPermit = (visitors) => (dispatch) => {
   dispatch(postingVisitorsForPermit());
   post(
-    "/visitor/submit",
+    "/permit",
     visitors,
     (response) => response.json(),
-    (e) => console.error("Could not post visitors for permit", e)
+    (e) => {
+      throw Error(`Could not post visitors for permit: ${e}`);
+    }
   ).then((results) => {
     dispatch(postedVisitorsForPermit());
     dispatch(clearVisitorsToSubmit());
     dispatch(showToasts(results));
     dispatch(markInvalidVisitors(results));
+    dispatch(fetchHistory());
   });
 };

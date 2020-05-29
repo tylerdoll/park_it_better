@@ -7,7 +7,8 @@ def format_generic_record(record):
     record = _convert_to_dict(record)
 
     # Flatten _id field to a string
-    record["_id"] = record["_id"]["$oid"]
+    if "$oid" in record["_id"]:
+        record["_id"] = record["_id"]["$oid"]
 
     return record
 

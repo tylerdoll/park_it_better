@@ -16,7 +16,9 @@ const renderHistory = (history) => {
             </Heading>
             <List spacing={2} fontSize="2xl">
               {day.visitors.map((visitor, i) => (
-                <ListItem key={i}>{visitor}</ListItem>
+                <ListItem key={i}>
+                  {`${visitor["visitor-first-name"]} ${visitor["visitor-last-name"]}`}
+                </ListItem>
               ))}
             </List>
           </div>
@@ -40,7 +42,7 @@ HistoryTab.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  history: state.visitors.history,
+  history: state.permitHistory.permitHistory,
 });
 
 export default connect(mapStateToProps, null)(HistoryTab);

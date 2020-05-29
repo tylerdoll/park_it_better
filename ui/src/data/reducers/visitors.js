@@ -18,7 +18,6 @@ import {
 } from "../actions/visitors";
 
 const initialState = {
-  history: [],
   allVisitors: [],
   visitorsToSubmit: [],
   invalidVisitors: [],

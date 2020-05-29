@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 
 from api.db import get_db
 from api.formats import format_generic_record, format_history_date
-from api.routes.history import add_to_history
+from api.routes.permit import _add_to_history
 
 
 def create_dummy_resident():
@@ -166,7 +166,7 @@ def test_history(app, client):
         db = get_db()
 
         # Check that history is empty
-        resp = client.get("/history")
+        resp = client.get("/permit/history")
         assert resp.status_code == 200
         assert resp.get_json() == []
 
@@ -178,9 +178,9 @@ def test_history(app, client):
         ]
         db.visitors.insert_many(visitors)
         times = [datetime.now(), datetime.now() - timedelta(3)]
-        add_to_history(visitors[0], times[0].timestamp())
-        add_to_history(visitors[1], times[0].timestamp())
-        add_to_history(visitors[2], times[1].timestamp())
+        _add_to_history(visitors[0], times[0].timestamp())
+        _add_to_history(visitors[1], times[0].timestamp())
+        _add_to_history(visitors[2], times[1].timestamp())
         visitors = [format_generic_record(visitor) for visitor in visitors]
         expected_response = [
             {
@@ -189,6 +189,6 @@ def test_history(app, client):
             },
             {"date": format_history_date(times[1]), "visitors": [visitors[2]]},
         ]
-        resp = client.get("/history")
+        resp = client.get("/permit/history")
         assert resp.status_code == 200
         assert resp.get_json() == expected_response
