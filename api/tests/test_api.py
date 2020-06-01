@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 
 from api.db import get_db
 from api.formats import format_generic_record, format_history_date
-from api.routes.permit import _add_to_history
 
 
 def create_dummy_resident():
@@ -39,7 +38,10 @@ def create_dummy_visitor(first="mark", last="jones"):
 
 
 def compare_record(record, data):
-    record["_id"] = str(record["_id"])
+    try:
+        record["_id"] = str(record["_id"])
+    except KeyError:
+        pass
     assert record == data
 
 
@@ -50,7 +52,7 @@ def test_save_resident(app, client):
         resident = create_dummy_resident()
         resp = client.post("/resident", json=resident)
         assert resp.status_code == 201
-        assert db.resident.count_documents({}) == 1
+        assert db.get_resident()
 
 
 def test_get_resident(app, client):
@@ -58,11 +60,13 @@ def test_get_resident(app, client):
         db = get_db()
 
         resident = create_dummy_resident()
-        db.resident.insert_one(resident)
+        db.save_resident(resident)
 
         resp = client.get("/resident")
         assert resp.status_code == 200
-        compare_record(resident, resp.get_json())
+        data = resp.get_json()
+        data.pop("_id")
+        compare_record(resident, data)
 
 
 def test_update_resident(app, client):
@@ -70,16 +74,13 @@ def test_update_resident(app, client):
         db = get_db()
 
         resident = create_dummy_resident()
-        db.resident.insert_one(resident)
+        db.save_resident(resident)
 
-        assert (
-            db.resident.find_one({"_id": resident["_id"]})["property-name"] == "Water"
-        )
+        assert db.get_resident()["property-name"] == "Water"
         resident["property-name"] = "Aspen"
-        resident["_id"] = str(resident["_id"])
         resp = client.post("/resident", json=resident)
         assert resp.status_code == 200
-        assert db.resident.find_one({})["property-name"] == "Aspen"
+        assert db.get_resident()["property-name"] == "Aspen"
 
 
 def test_save_visitor(app, client):
@@ -89,7 +90,7 @@ def test_save_visitor(app, client):
         visitor = create_dummy_visitor()
         resp = client.post("/visitor", json=visitor)
         assert resp.status_code == 201
-        assert db.visitors.count_documents({}) == 1
+        assert len(db.get_visitors()) == 1
 
 
 def test_get_empty_visitors(client):
@@ -97,12 +98,12 @@ def test_get_empty_visitors(client):
     assert len(resp.get_json()) == 0
 
 
-def test_get_only_visitor(app, client):
+def test_get_one_visitor(app, client):
     with app.app_context():
         db = get_db()
 
         visitor = create_dummy_visitor()
-        db.visitors.insert_one(visitor)
+        db.insert_visitor(visitor)
 
         resp = client.get("/visitor")
         resp_data = resp.get_json()
@@ -116,7 +117,8 @@ def test_get_multiple_visitors(app, client):
         db = get_db()
 
         visitors = [create_dummy_visitor(), create_dummy_visitor("travis", "scott")]
-        db.visitors.insert_many(visitors)
+        for visitor in visitors:
+            db.insert_visitor(visitor)
 
         resp = client.get("/visitor")
         resp_data = resp.get_json()
@@ -130,12 +132,17 @@ def test_update_visitor(app, client):
         db = get_db()
 
         visitor = create_dummy_visitor()
-        visitor_id = db.visitors.insert_one(visitor).inserted_id
+        visitor_id = db.insert_visitor(visitor)
 
-        assert db.visitors.find_one({"_id": visitor["_id"]})["visitor-color"] == "white"
+        def get_visitor_color():
+            return list(filter(lambda v: v["_id"] == visitor_id, db.get_visitors()))[0][
+                "visitor-color"
+            ]
+
+        assert get_visitor_color() == "white"
         resp = client.put(f"/visitor/{visitor_id}", json={"visitor-color": "black"})
         assert resp.status_code == 200
-        assert db.visitors.find_one({"_id": visitor["_id"]})["visitor-color"] == "black"
+        assert get_visitor_color() == "black"
 
         visitor["_id"] = str(visitor["_id"])
         resp = client.put(f"/visitor/{visitor_id}", json=visitor)
@@ -150,12 +157,11 @@ def test_delete_visitor(app, client):
         db = get_db()
 
         visitor = create_dummy_visitor()
-        visitor_id = db.visitors.insert_one(visitor).inserted_id
-        assert db.visitors.count_documents({}) == 1
+        visitor_id = db.insert_visitor(visitor)
+        assert len(db.get_visitors()) == 1
 
         resp = client.delete(f"/visitor/{visitor_id}")
-        assert resp.status_code == 200
-        assert db.visitors.count_documents({}) == 0
+        assert len(db.get_visitors()) == 0
 
         resp = client.delete(f"/visitor/{visitor_id}")
         assert resp.status_code == 404
@@ -176,11 +182,12 @@ def test_history(app, client):
             create_dummy_visitor("carl", "clarkson"),
             create_dummy_visitor("sean", "dew"),
         ]
-        db.visitors.insert_many(visitors)
+        for visitor in visitors:
+            db.insert_visitor(visitor)
         times = [datetime.now(), datetime.now() - timedelta(3)]
-        _add_to_history(visitors[0], times[0].timestamp())
-        _add_to_history(visitors[1], times[0].timestamp())
-        _add_to_history(visitors[2], times[1].timestamp())
+        db.add_history(visitors[0], times[0].timestamp())
+        db.add_history(visitors[1], times[0].timestamp())
+        db.add_history(visitors[2], times[1].timestamp())
         visitors = [format_generic_record(visitor) for visitor in visitors]
         expected_response = [
             {

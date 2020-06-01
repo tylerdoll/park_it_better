@@ -1,5 +1,4 @@
 # std
-from datetime import datetime
 import logging
 import random
 
@@ -17,9 +16,7 @@ blueprint = Blueprint("permit", __name__)
 @blueprint.route("/permit", methods=["POST"])
 def post():
     db = get_db()
-    resident = db.resident.find_one(projection={"_id": False})
-    if not resident:
-        raise RuntimeError("Could not find resident")
+    resident = db.get_resident()
 
     driver = create_driver()
     visitors = request.json
@@ -40,7 +37,7 @@ def post():
         logging.debug(response)
 
         if response["succeeded"]:
-            _add_to_history(visitor)
+            db.add_history(visitor)
 
     return jsonify(responses)
 
@@ -48,14 +45,9 @@ def post():
 @blueprint.route("/permit/history", methods=["GET"])
 def get_history():
     db = get_db()
-    records = db.history.find()
+    records = db.get_history()
     formatted_history = format_history(records)
     return jsonify(formatted_history)
-
-
-def _add_to_history(visitor, timestamp=datetime.now().timestamp()):
-    db = get_db()
-    db.history.insert_one({"timestamp": timestamp, "visitor": visitor})
 
 
 def _create_response(visitor, succeeded, msg):

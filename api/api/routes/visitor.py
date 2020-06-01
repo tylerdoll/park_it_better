@@ -1,5 +1,4 @@
 # std
-from bson.json_util import ObjectId
 
 # 3rd party
 from flask import Blueprint, jsonify, request
@@ -15,14 +14,14 @@ blueprint = Blueprint("visitor", __name__)
 def post():
     db = get_db()
     visitor = request.json
-    db.visitors.insert_one(visitor).inserted_id
+    db.insert_visitor(visitor)
     return "", 201
 
 
 @blueprint.route("/visitor")
 def get():
     db = get_db()
-    visitors = [format_generic_record(v) for v in db.visitors.find()]
+    visitors = [format_generic_record(v) for v in db.get_visitors()]
     return jsonify(visitors)
 
 
@@ -31,21 +30,12 @@ def put(visitor_id):
     db = get_db()
 
     data = request.json
-    if "_id" in data:
-        data.pop("_id")
-    update = {"$set": data}
-
-    result = db.visitors.update_one({"_id": ObjectId(visitor_id)}, update)
-    if result.matched_count == 0:
-        return "", 404
-    if result.modified_count == 1:
-        return "", 200
-    return "", 500
+    db.update_visitor(visitor_id, data)
+    return "", 200
 
 
 @blueprint.route("/visitor/<visitor_id>", methods=["DELETE"])
 def delete(visitor_id):
     db = get_db()
-    result = db.visitors.delete_one({"_id": ObjectId(visitor_id)})
-    status_code = 404 if result.deleted_count == 0 else 200
-    return "", status_code
+    db.delete_visitor(visitor_id)
+    return "", 200

@@ -14,19 +14,14 @@ def post():
     if "_id" in resident:
         resident.pop("_id")
 
-    result = db.resident.replace_one({}, resident, upsert=True)
-    if result.matched_count == 0:
-        return "", 201
-    if result.modified_count == 1:
+    result = db.save_resident(resident)
+    if result == "UPDATED":
         return "", 200
-    return "", 500
+    if result == "CREATED":
+        return "", 201
 
 
 @blueprint.route("/resident")
 def get():
     db = get_db()
-    resident = db.resident.find_one()
-    if resident is None:
-        return "", 404
-    else:
-        return jsonify(format_generic_record(resident))
+    return jsonify(format_generic_record(db.get_resident()))

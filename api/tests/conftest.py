@@ -5,7 +5,7 @@ from api.app import create_app
 
 @pytest.fixture
 def app():
-    app = create_app({"TESTING": True})
+    app = create_app({"TESTING": True, "PROPAGATE_EXCEPTIONS": False})
     yield app
 
 
