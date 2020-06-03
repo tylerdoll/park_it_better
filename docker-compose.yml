@@ -1,12 +1,12 @@
 version: '2'
 services:
-  api:
+  parking_api:
     image: tylerdoll/park_it_better_api
-  db:
+  parking_db:
     image: webhippie/mongodb
     volumes:
       - mongo:/var/lib/mongodb
-  ui:
+  parking_ui:
     image: tylerdoll/park_it_better_ui
 
 volumes:
