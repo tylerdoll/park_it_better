@@ -3,9 +3,9 @@ services:
   api:
     image: tylerdoll/park_it_better_api
   db:
-    image: mongo
+    image: webhippie/mongodb
     volumes:
-      - mongo:/data/db
+      - mongo:/var/lib/mongodb
   ui:
     image: tylerdoll/park_it_better_ui
 
