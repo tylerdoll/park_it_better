@@ -32,7 +32,7 @@ class Database:
         self._client = (
             mongomock.MongoClient()
             if current_app.config["TESTING"]
-            else pm.MongoClient("db")
+            else pm.MongoClient("parking_db")
         )
         self._db = self._client.parking
 
