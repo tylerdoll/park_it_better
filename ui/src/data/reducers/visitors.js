@@ -32,7 +32,7 @@ const initialState = {
     city: "n/a",
     zip: "n/a",
     vehicleColor: "",
-    vehicleYear: "",
+    vehicleYear: new Date().getFullYear(),
     vehicleMake: "",
     vehicleModel: "",
     vehiclePlate: "",

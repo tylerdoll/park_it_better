@@ -18,6 +18,22 @@ import { saveVisitor } from "../../data/actions/visitors";
 const SaveVisitorForm = (props) => {
   const { onFormSubmit, savingVisitor, initalValues } = props;
   const formSectionSpacing = 3;
+
+  const handlePhoneChange = (event, next) => {
+    const val = event.target.value;
+    const phone = val.replace(/\D/g, "");
+    const match = phone.match(/^(\d{1,3})(\d{0,3})(\d{0,4})$/);
+    let formatted = "";
+    if (match) {
+      formatted = `(${match[1]})`;
+      formatted += `${match[2] ? " " : ""}${match[2]}`;
+      formatted += `${match[3] ? "-" : ""}${match[3]}`;
+    }
+    event.target.value = formatted;
+
+    next(event);
+  };
+
   return (
     <Formik
       initialValues={initalValues}
@@ -43,7 +59,14 @@ const SaveVisitorForm = (props) => {
                 {({ field, form }) => (
                   <FormControl>
                     <FormLabel htmlFor="phone">Phone</FormLabel>
-                    <Input {...field} placeholder="555-555-5555" type="tel" />
+                    <Input
+                      {...field}
+                      onChange={(e) => {
+                        handlePhoneChange(e, field.onChange);
+                      }}
+                      placeholder="(555) 555-5555"
+                      type="tel"
+                    />
                   </FormControl>
                 )}
               </Field>
@@ -113,6 +136,7 @@ const SaveVisitorForm = (props) => {
               type="submit"
               loadingText="Saving"
               isLoading={savingVisitor}
+              width="100%"
             >
               Save
             </Button>

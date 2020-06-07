@@ -15,73 +15,75 @@ const SaveResidentForm = (props) => {
     >
       {(props) => (
         <Form>
-          <Stack spacing={3} shouldWrapChildren>
-            <Field name="property">
-              {({ field, form }) => (
-                <FormControl>
-                  <FormLabel htmlFor="property">Property Name</FormLabel>
-                  <Input {...field} />
-                </FormControl>
-              )}
-            </Field>
-            <Field name="fullName">
-              {({ field, form }) => (
-                <FormControl>
-                  <FormLabel htmlFor="fullName">Full Name</FormLabel>
-                  <Input {...field} />
-                </FormControl>
-              )}
-            </Field>
-            <Field name="address">
-              {({ field, form }) => (
-                <FormControl>
-                  <FormLabel htmlFor="address">Address</FormLabel>
-                  <Input {...field} />
-                </FormControl>
-              )}
-            </Field>
-            <Field name="unit">
-              {({ field, form }) => (
-                <FormControl>
-                  <FormLabel htmlFor="unit">Unit</FormLabel>
-                  <Input {...field} />
-                </FormControl>
-              )}
-            </Field>
-            <Field name="city">
-              {({ field, form }) => (
-                <FormControl>
-                  <FormLabel htmlFor="city">City</FormLabel>
-                  <Input {...field} />
-                </FormControl>
-              )}
-            </Field>
-            <Field name="state">
-              {({ field, form }) => (
-                <FormControl>
-                  <FormLabel htmlFor="state">State</FormLabel>
-                  <Input {...field} />
-                </FormControl>
-              )}
-            </Field>
-            <Field name="zip">
-              {({ field, form }) => (
-                <FormControl>
-                  <FormLabel htmlFor="zip">Zip</FormLabel>
-                  <Input {...field} placeholder="" />
-                </FormControl>
-              )}
-            </Field>
+          <Stack spacing={6} shouldWrapChildren={true}>
+            <Stack spacing={3} shouldWrapChildren={true}>
+              <Field name="property">
+                {({ field, form }) => (
+                  <FormControl>
+                    <FormLabel htmlFor="property">Property Name</FormLabel>
+                    <Input {...field} />
+                  </FormControl>
+                )}
+              </Field>
+              <Field name="fullName">
+                {({ field, form }) => (
+                  <FormControl>
+                    <FormLabel htmlFor="fullName">Full Name</FormLabel>
+                    <Input {...field} />
+                  </FormControl>
+                )}
+              </Field>
+              <Field name="address">
+                {({ field, form }) => (
+                  <FormControl>
+                    <FormLabel htmlFor="address">Address</FormLabel>
+                    <Input {...field} />
+                  </FormControl>
+                )}
+              </Field>
+              <Field name="unit">
+                {({ field, form }) => (
+                  <FormControl>
+                    <FormLabel htmlFor="unit">Unit</FormLabel>
+                    <Input {...field} />
+                  </FormControl>
+                )}
+              </Field>
+              <Field name="city">
+                {({ field, form }) => (
+                  <FormControl>
+                    <FormLabel htmlFor="city">City</FormLabel>
+                    <Input {...field} />
+                  </FormControl>
+                )}
+              </Field>
+              <Field name="state">
+                {({ field, form }) => (
+                  <FormControl>
+                    <FormLabel htmlFor="state">State</FormLabel>
+                    <Input {...field} />
+                  </FormControl>
+                )}
+              </Field>
+              <Field name="zip">
+                {({ field, form }) => (
+                  <FormControl>
+                    <FormLabel htmlFor="zip">Zip</FormLabel>
+                    <Input {...field} placeholder="" />
+                  </FormControl>
+                )}
+              </Field>
+            </Stack>
+            <Button
+              variantColor="green"
+              type="submit"
+              loadingText="Saving"
+              isLoading={savingResident}
+              width="100%"
+            >
+              Save
+            </Button>
           </Stack>
-          <Button
-            mt={4}
-            variantColor="green"
-            type="submit"
-            loadingText="Saving"
-            isLoading={savingResident}
-          >
-            Save
-          </Button>
         </Form>
       )}
     </Formik>
