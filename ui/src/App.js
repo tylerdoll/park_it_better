@@ -48,10 +48,8 @@ const App = (props) => {
     >
       <TabList
         bg="gray.700"
-        height="64px"
         display="flex"
         position="fixed"
-        p={4}
         top={0}
         left={0}
         right={0}

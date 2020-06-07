@@ -11,7 +11,7 @@ const IconTab = forwardRef((props, ref) => {
       ref={ref}
       isSelected={isSelected}
       flex={1}
-      p={0}
+      p={4}
       {...props}
       _selected={{}}
       _focus={{ borderColor: null }}
@@ -20,7 +20,7 @@ const IconTab = forwardRef((props, ref) => {
       <Box
         as={icon}
         aria-label={label}
-        size="32px"
+        size="24px"
         color={isSelected ? color : "white"}
       />
     </Tab>
