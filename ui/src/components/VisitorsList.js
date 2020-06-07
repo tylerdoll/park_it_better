@@ -43,9 +43,10 @@ const VisitorsList = (props) => {
           Oh, poop
         </Heading>
         <Text textAlign="center" mt={4}>
-          {
-            "It looks like you haven't added any visitors yet. Tap below to add a visitor."
-          }
+          {"It looks like you haven't added any visitors yet."}
+        </Text>
+        <Text textAlign="center" mt={1}>
+          {"Tap below to add a visitor."}
         </Text>
         <Button onClick={() => dispatchSetTabIndex(1)} mt={6}>
           Add a Visitor
