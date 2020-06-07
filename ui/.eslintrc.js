@@ -6,6 +6,7 @@ module.exports = {
   'extends': [
     'plugin:react/recommended',
     'google',
+    'plugin:prettier/recommended',
     'prettier',
   ],
   'globals': {
@@ -24,6 +25,7 @@ module.exports = {
     'prettier',
   ],
   'rules': {
+    'react/jsx-uses-react': 'error',
     'prettier/prettier': 'error',
   },
 };
