@@ -14,6 +14,7 @@ blueprint = Blueprint("visitor", __name__)
 def post():
     db = get_db()
     visitor = request.json
+    # TODO remove spaces and dashes from plate number
     db.insert_visitor(visitor)
     return "", 201
 

@@ -2,13 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Formik, Form, Field } from "formik";
-import {
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  SimpleGrid,
-} from "@chakra-ui/core";
+import { Button, FormControl, FormLabel, Input, Stack } from "@chakra-ui/core";
 import { saveResident } from "../../data/actions/resident";
 
 const SaveResidentForm = (props) => {
@@ -21,76 +15,64 @@ const SaveResidentForm = (props) => {
     >
       {(props) => (
         <Form>
-          <SimpleGrid columns={{ sm: 1, md: 2 }} spacing={4}>
-            <Field name="property-name">
+          <Stack spacing={3} shouldWrapChildren>
+            <Field name="property">
               {({ field, form }) => (
                 <FormControl>
-                  <FormLabel htmlFor="property-name">Property name</FormLabel>
+                  <FormLabel htmlFor="property">Property Name</FormLabel>
                   <Input {...field} />
                 </FormControl>
               )}
             </Field>
-            <Field name="first-name-of-resident">
+            <Field name="fullName">
               {({ field, form }) => (
                 <FormControl>
-                  <FormLabel htmlFor="first-name-of-resident">
-                    First name
-                  </FormLabel>
+                  <FormLabel htmlFor="fullName">Full Name</FormLabel>
                   <Input {...field} />
                 </FormControl>
               )}
             </Field>
-            <Field name="last-name-of-resident">
+            <Field name="address">
               {({ field, form }) => (
                 <FormControl>
-                  <FormLabel htmlFor="last-name-of-resident">
-                    Last name
-                  </FormLabel>
+                  <FormLabel htmlFor="address">Address</FormLabel>
                   <Input {...field} />
                 </FormControl>
               )}
             </Field>
-            <Field name="resident-address">
+            <Field name="unit">
               {({ field, form }) => (
                 <FormControl>
-                  <FormLabel htmlFor="resident-address">Address</FormLabel>
+                  <FormLabel htmlFor="unit">Unit</FormLabel>
                   <Input {...field} />
                 </FormControl>
               )}
             </Field>
-            <Field name="resident-apartment">
+            <Field name="city">
               {({ field, form }) => (
                 <FormControl>
-                  <FormLabel htmlFor="resident-apartment">Unit</FormLabel>
+                  <FormLabel htmlFor="city">City</FormLabel>
                   <Input {...field} />
                 </FormControl>
               )}
             </Field>
-            <Field name="resident-city">
+            <Field name="state">
               {({ field, form }) => (
                 <FormControl>
-                  <FormLabel htmlFor="resident-city">City</FormLabel>
+                  <FormLabel htmlFor="state">State</FormLabel>
                   <Input {...field} />
                 </FormControl>
               )}
             </Field>
-            <Field name="resident-state">
+            <Field name="zip">
               {({ field, form }) => (
                 <FormControl>
-                  <FormLabel htmlFor="resident-state">State</FormLabel>
-                  <Input {...field} />
-                </FormControl>
-              )}
-            </Field>
-            <Field name="resident-zip">
-              {({ field, form }) => (
-                <FormControl>
-                  <FormLabel htmlFor="resident-zip">Zip</FormLabel>
+                  <FormLabel htmlFor="zip">Zip</FormLabel>
                   <Input {...field} placeholder="" />
                 </FormControl>
               )}
             </Field>
-          </SimpleGrid>
+          </Stack>
           <Button
             mt={4}
             variantColor="green"

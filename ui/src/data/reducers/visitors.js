@@ -29,20 +29,19 @@ const initialState = {
     visitorId: null,
   },
   visitorFormInitialValues: {
-    "visitor-first-name": "",
-    "visitor-last-name": "",
-    "visitor-phone": "",
-    "visitor-year": "",
-    "visitor-make": "",
-    "visitor-model": "",
-    "visitor-color": "",
-    "visitor-license-plate-number": "",
-    "visitor-state-of-issuance": "",
-    "visitor-email": "email@address.com",
-    "visitor-address": "n/a",
-    "visitor-apt-number": "n/a",
-    "visitor-city": "n/a",
-    "visitor-zip": "n/a",
+    fullName: "",
+    email: "email@address.com",
+    phone: "",
+    address: "n/a",
+    unit: "n/a",
+    city: "n/a",
+    zip: "n/a",
+    vehicleColor: "",
+    vehicleYear: "",
+    vehicleMake: "",
+    vehicleModel: "",
+    vehiclePlate: "",
+    vehicleState: "CO",
   },
 };
 
@@ -88,11 +87,8 @@ export default function (state = initialState, action) {
 
       const toasts = results.map((result) => {
         const { visitor } = result;
-        const firstName = visitor["visitor-first-name"];
-        const lastName = visitor["visitor-last-name"];
-        const name = `${firstName} ${lastName}`;
-        const successTitle = `Successfully submit ${name}`;
-        const failTitle = `Failed to submit ${name}`;
+        const successTitle = `Successfully submit ${visitor["fullName"]}`;
+        const failTitle = `Failed to submit ${visitor["fullName"]}`;
         return {
           id: uuid4(),
           title: result.succeeded ? successTitle : failTitle,

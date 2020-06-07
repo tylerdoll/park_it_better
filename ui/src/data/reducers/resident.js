@@ -7,14 +7,13 @@ import {
 const initialState = {
   saving: false,
   fields: {
-    "property-name": "",
-    "first-name-of-resident": "",
-    "last-name-of-resident": "",
-    "resident-address": "",
-    "resident-apartment": "",
-    "resident-city": "",
-    "resident-state": "",
-    "resident-zip": "",
+    property: "",
+    fullName: "",
+    address: "",
+    unit: "",
+    city: "",
+    state: "",
+    zip: "",
   },
 };
 

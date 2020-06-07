@@ -14,10 +14,3 @@ class ResidentNotFoundError(CustomException):
 class VisitorNotFoundError(CustomException):
     def __init__(self, visitor_id):
         CustomException.__init__(self, f"Could not find visitor with ID {visitor_id}")
-
-
-class FieldsMismatchError(CustomException):
-    def __init__(self, expected, got):
-        CustomException.__init__(
-            self, f"Missing fields\nexpected: {expected}\ngot:      {got}"
-        )

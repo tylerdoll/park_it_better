@@ -9,13 +9,15 @@ import {
   FormControl,
   FormLabel,
   Input,
-  SimpleGrid,
+  Stack,
+  Heading,
 } from "@chakra-ui/core";
 
 import { saveVisitor } from "../../data/actions/visitors";
 
 const SaveVisitorForm = (props) => {
   const { onFormSubmit, savingVisitor, initalValues } = props;
+  const formSectionSpacing = 3;
   return (
     <Formik
       initialValues={initalValues}
@@ -23,98 +25,103 @@ const SaveVisitorForm = (props) => {
     >
       {(props) => (
         <Form>
-          <SimpleGrid columns={{ sm: 1, md: 2 }} spacing={4}>
-            <Field name="visitor-first-name">
-              {({ field, form }) => (
-                <FormControl>
-                  <FormLabel htmlFor="visitor-first-name">First name</FormLabel>
-                  <Input {...field} placeholder="Alex" />
-                </FormControl>
-              )}
-            </Field>
-            <Field name="visitor-last-name">
-              {({ field, form }) => (
-                <FormControl>
-                  <FormLabel htmlFor="visitor-last-name">Last name</FormLabel>
-                  <Input {...field} placeholder="Jones" />
-                </FormControl>
-              )}
-            </Field>
-            <Field name="visitor-phone" type="tel">
-              {({ field, form }) => (
-                <FormControl>
-                  <FormLabel htmlFor="visitor-phone">Phone</FormLabel>
-                  <Input {...field} placeholder="555-555-5555" />
-                </FormControl>
-              )}
-            </Field>
-            <Field name="visitor-year" type="number">
-              {({ field, form }) => (
-                <FormControl>
-                  <FormLabel htmlFor="visitor-year">Vehicle year</FormLabel>
-                  <Input {...field} placeholder="1337" />
-                </FormControl>
-              )}
-            </Field>
-            <Field name="visitor-make">
-              {({ field, form }) => (
-                <FormControl>
-                  <FormLabel htmlFor="visitor-make">Vehicle make</FormLabel>
-                  <Input {...field} placeholder="Rolls Royce" />
-                </FormControl>
-              )}
-            </Field>
-            <Field name="visitor-model">
-              {({ field, form }) => (
-                <FormControl>
-                  <FormLabel htmlFor="visitor-model">Vehicle model</FormLabel>
-                  <Input {...field} placeholder="Phantom" />
-                </FormControl>
-              )}
-            </Field>
-            <Field name="visitor-color">
-              {({ field, form }) => (
-                <FormControl>
-                  <FormLabel htmlFor="visitor-color">Vehicle color</FormLabel>
-                  <Input {...field} placeholder="Mother of pearl" />
-                </FormControl>
-              )}
-            </Field>
-            <Field name="visitor-license-plate-number">
-              {({ field, form }) => (
-                <FormControl>
-                  <FormLabel htmlFor="visitor-license-plate-number">
-                    Vehicle license plate number (no spaces or dashes)
-                  </FormLabel>
-                  <Input {...field} placeholder="MONEYBAGS" />
-                </FormControl>
-              )}
-            </Field>
-            <Field name="visitor-state-of-issuance">
-              {({ field, form }) => (
-                <FormControl>
-                  <FormLabel htmlFor="visitor-state-of-issuance">
-                    Vehicle state of issuance
-                  </FormLabel>
-                  <Input {...field} placeholder="CA" />
-                </FormControl>
-              )}
-            </Field>
-          </SimpleGrid>
-          <Field name="visitor-email" type="hidden"></Field>
-          <Field name="visitor-address" type="hidden"></Field>
-          <Field name="visitor-apt-number" type="hidden"></Field>
-          <Field name="visitor-city" type="hidden"></Field>
-          <Field name="visitor-zip" type="hidden"></Field>
-          <Button
-            mt={3}
-            variantColor="green"
-            type="submit"
-            loadingText="Saving"
-            isLoading={savingVisitor}
-          >
-            Save
-          </Button>
+          <Stack spacing={6} shouldWrapChildren={true}>
+            <Stack spacing={formSectionSpacing} shouldWrapChildren={true}>
+              <Heading as="h2" size="md" color="gray.500">
+                Personal
+              </Heading>
+
+              <Field name="fullName">
+                {({ field, form }) => (
+                  <FormControl>
+                    <FormLabel htmlFor="fullName">Full Name</FormLabel>
+                    <Input {...field} placeholder="John Smith" />
+                  </FormControl>
+                )}
+              </Field>
+              <Field name="phone">
+                {({ field, form }) => (
+                  <FormControl>
+                    <FormLabel htmlFor="phone">Phone</FormLabel>
+                    <Input {...field} placeholder="555-555-5555" type="tel" />
+                  </FormControl>
+                )}
+              </Field>
+            </Stack>
+
+            <Stack spacing={formSectionSpacing} shouldWrapChildren={true}>
+              <Heading as="h2" size="md" color="gray.500">
+                Vehicle
+              </Heading>
+
+              <Field name="vehicleColor">
+                {({ field, form }) => (
+                  <FormControl>
+                    <FormLabel htmlFor="vehicleColor">Color</FormLabel>
+                    <Input {...field} placeholder="Mother of pearl" />
+                  </FormControl>
+                )}
+              </Field>
+              <Field name="vehicleYear">
+                {({ field, form }) => (
+                  <FormControl>
+                    <FormLabel htmlFor="vehicleYear">Year</FormLabel>
+                    <Input {...field} placeholder="1337" type="number" />
+                  </FormControl>
+                )}
+              </Field>
+              <Field name="vehicleMake">
+                {({ field, form }) => (
+                  <FormControl>
+                    <FormLabel htmlFor="vehicleMake">Make</FormLabel>
+                    <Input {...field} placeholder="Rolls Royce" />
+                  </FormControl>
+                )}
+              </Field>
+              <Field name="vehicleModel">
+                {({ field, form }) => (
+                  <FormControl>
+                    <FormLabel htmlFor="vehicleModel">Model</FormLabel>
+                    <Input {...field} placeholder="Phantom" />
+                  </FormControl>
+                )}
+              </Field>
+              <Field name="vehicleState">
+                {({ field, form }) => (
+                  <FormControl>
+                    <FormLabel htmlFor="vehicleState">
+                      State of issuance
+                    </FormLabel>
+                    <Input {...field} placeholder="CA" />
+                  </FormControl>
+                )}
+              </Field>
+              <Field name="vehiclePlate">
+                {({ field, form }) => (
+                  <FormControl>
+                    <FormLabel htmlFor="vehiclePlate">
+                      License plate number
+                    </FormLabel>
+                    <Input {...field} placeholder="MONEYBAGS" />
+                  </FormControl>
+                )}
+              </Field>
+            </Stack>
+
+            <Button
+              variantColor="green"
+              type="submit"
+              loadingText="Saving"
+              isLoading={savingVisitor}
+            >
+              Save
+            </Button>
+          </Stack>
+          <Field name="email" type="hidden"></Field>
+          <Field name="address" type="hidden"></Field>
+          <Field name="unit" type="hidden"></Field>
+          <Field name="city" type="hidden"></Field>
+          <Field name="zip" type="hidden"></Field>
         </Form>
       )}
     </Formik>

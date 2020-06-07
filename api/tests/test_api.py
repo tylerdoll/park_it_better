@@ -5,39 +5,37 @@ from api.db import get_db
 from api.formats import format_generic_record, format_history_date
 
 
-def create_dummy_resident():
+def _create_dummy_resident():
     return {
-        "property-name": "Water",
-        "first-name-of-resident": "Elon",
-        "last-name-of-resident": "Musk",
-        "resident-address": "1 St. Mars",
-        "resident-apartment": 1337,
-        "resident-city": "Doom",
-        "resident-state": "Mars",
-        "resident-zip": 9001,
+        "property": "Water",
+        "fullName": "Elon Musk",
+        "address": "1 St. Mars",
+        "unit": 1337,
+        "city": "Doom",
+        "state": "Mars",
+        "zip": 9001,
     }
 
 
-def create_dummy_visitor(first="mark", last="jones"):
+def _create_dummy_visitor(name="mark jones"):
     return {
-        "visitor-address": "n/a",
-        "visitor-apt-number": "n/a",
-        "visitor-city": "n/a",
-        "visitor-color": "white",
-        "visitor-email": "email@address.com",
-        "visitor-first-name": first,
-        "visitor-last-name": last,
-        "visitor-license-plate-number": "ajk798",
-        "visitor-make": "honda",
-        "visitor-model": "civic",
-        "visitor-phone": "904-476-8779",
-        "visitor-state-of-issuance": "CO",
-        "visitor-year": "2002",
-        "visitor-zip": "n/a",
+        "fullName": name,
+        "email": "email@address.com",
+        "phone": "904-476-8779",
+        "address": "n/a",
+        "unit": "n/a",
+        "city": "n/a",
+        "zip": "n/a",
+        "vehiclePlate": "ajk-798",
+        "vehicleColor": "white",
+        "vehicleMake": "honda",
+        "vehicleModel": "civic",
+        "vehicleState": "CO",
+        "vehicleYear": 2002,
     }
 
 
-def compare_record(record, data):
+def _compare_record(record, data):
     try:
         record["_id"] = str(record["_id"])
     except KeyError:
@@ -49,7 +47,7 @@ def test_save_resident(app, client):
     with app.app_context():
         db = get_db()
 
-        resident = create_dummy_resident()
+        resident = _create_dummy_resident()
         resp = client.post("/resident", json=resident)
         assert resp.status_code == 201
         assert db.get_resident()
@@ -59,35 +57,35 @@ def test_get_resident(app, client):
     with app.app_context():
         db = get_db()
 
-        resident = create_dummy_resident()
+        resident = _create_dummy_resident()
         db.save_resident(resident)
 
         resp = client.get("/resident")
         assert resp.status_code == 200
         data = resp.get_json()
         data.pop("_id")
-        compare_record(resident, data)
+        _compare_record(resident, data)
 
 
 def test_update_resident(app, client):
     with app.app_context():
         db = get_db()
 
-        resident = create_dummy_resident()
+        resident = _create_dummy_resident()
         db.save_resident(resident)
 
-        assert db.get_resident()["property-name"] == "Water"
-        resident["property-name"] = "Aspen"
+        assert db.get_resident()["property"] == "Water"
+        resident["property"] = "Aspen"
         resp = client.post("/resident", json=resident)
         assert resp.status_code == 200
-        assert db.get_resident()["property-name"] == "Aspen"
+        assert db.get_resident()["property"] == "Aspen"
 
 
 def test_save_visitor(app, client):
     with app.app_context():
         db = get_db()
 
-        visitor = create_dummy_visitor()
+        visitor = _create_dummy_visitor()
         resp = client.post("/visitor", json=visitor)
         assert resp.status_code == 201
         assert len(db.get_visitors()) == 1
@@ -102,21 +100,21 @@ def test_get_one_visitor(app, client):
     with app.app_context():
         db = get_db()
 
-        visitor = create_dummy_visitor()
+        visitor = _create_dummy_visitor()
         db.insert_visitor(visitor)
 
         resp = client.get("/visitor")
         resp_data = resp.get_json()
 
         assert len(resp_data) == 1
-        compare_record(visitor, resp_data[0])
+        _compare_record(visitor, resp_data[0])
 
 
 def test_get_multiple_visitors(app, client):
     with app.app_context():
         db = get_db()
 
-        visitors = [create_dummy_visitor(), create_dummy_visitor("travis", "scott")]
+        visitors = [_create_dummy_visitor(), _create_dummy_visitor("travis scott")]
         for visitor in visitors:
             db.insert_visitor(visitor)
 
@@ -124,23 +122,23 @@ def test_get_multiple_visitors(app, client):
         resp_data = resp.get_json()
         assert len(resp_data) == len(visitors)
         for i in range(len(resp_data)):
-            compare_record(visitors[i], resp_data[i])
+            _compare_record(visitors[i], resp_data[i])
 
 
 def test_update_visitor(app, client):
     with app.app_context():
         db = get_db()
 
-        visitor = create_dummy_visitor()
+        visitor = _create_dummy_visitor()
         visitor_id = db.insert_visitor(visitor)
 
         def get_visitor_color():
             return list(filter(lambda v: v["_id"] == visitor_id, db.get_visitors()))[0][
-                "visitor-color"
+                "vehicleColor"
             ]
 
         assert get_visitor_color() == "white"
-        resp = client.put(f"/visitor/{visitor_id}", json={"visitor-color": "black"})
+        resp = client.put(f"/visitor/{visitor_id}", json={"vehicleColor": "black"})
         assert resp.status_code == 200
         assert get_visitor_color() == "black"
 
@@ -148,7 +146,7 @@ def test_update_visitor(app, client):
         resp = client.put(f"/visitor/{visitor_id}", json=visitor)
         assert resp.status_code == 200
 
-        resp = client.put(f"/visitor/{ObjectId()}", json={"visitor-color": "black"})
+        resp = client.put(f"/visitor/{ObjectId()}", json={"vehicleColor": "black"})
         assert resp.status_code == 404
 
 
@@ -156,7 +154,7 @@ def test_delete_visitor(app, client):
     with app.app_context():
         db = get_db()
 
-        visitor = create_dummy_visitor()
+        visitor = _create_dummy_visitor()
         visitor_id = db.insert_visitor(visitor)
         assert len(db.get_visitors()) == 1
 
@@ -178,9 +176,9 @@ def test_history(app, client):
 
         # Check that the api can retrieve records
         visitors = [
-            create_dummy_visitor("mike", "jones"),
-            create_dummy_visitor("carl", "clarkson"),
-            create_dummy_visitor("sean", "dew"),
+            _create_dummy_visitor("mike jones"),
+            _create_dummy_visitor("carl clarkson"),
+            _create_dummy_visitor("sean dew"),
         ]
         for visitor in visitors:
             db.insert_visitor(visitor)

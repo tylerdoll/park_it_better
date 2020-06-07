@@ -1,3 +1,6 @@
+# std
+import re
+
 # 3rd party
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
@@ -8,7 +11,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 # local
 from api.expected_conditions import element_has_css_class
-from api.exceptions import FieldsMismatchError
 
 _FORM_URL = (
     "https://www.parkitrightpermit.com/park-it-right-contact-visitor-permit-request/"
@@ -21,33 +23,6 @@ _FORM_RESPONSE_ELEM_CLASS = "wpcf7-response-output"
 _SUBMIT_BTN = "visitors"
 _LOADER_ID = "jpreOverlay"
 
-_RESIDENT_FIELDS = {
-    "property-name",
-    "first-name-of-resident",
-    "last-name-of-resident",
-    "resident-address",
-    "resident-apartment",
-    "resident-city",
-    "resident-state",
-    "resident-zip",
-}
-_VISITOR_FIELDS = {
-    "visitor-color",
-    "visitor-first-name",
-    "visitor-last-name",
-    "visitor-license-plate-number",
-    "visitor-make",
-    "visitor-model",
-    "visitor-phone",
-    "visitor-state-of-issuance",
-    "visitor-email",
-    "visitor-address",
-    "visitor-apt-number",
-    "visitor-city",
-    "visitor-zip",
-    "visitor-year",
-}
-
 
 def create_driver():
     opts = Options()
@@ -59,10 +34,8 @@ def create_driver():
 
 
 def submit_visitor_info(driver, resident, visitor):
-    if not set(resident.keys()).issubset(_RESIDENT_FIELDS):
-        raise FieldsMismatchError(_RESIDENT_FIELDS, resident.keys())
-    if not set(visitor.keys()).issubset(_VISITOR_FIELDS):
-        raise FieldsMismatchError(_VISITOR_FIELDS, visitor.keys())
+    resident = _format_visitor(resident)
+    visitor = _format_resident(visitor)
 
     driver.get(_FORM_URL)
     try:
@@ -83,6 +56,40 @@ def submit_visitor_info(driver, resident, visitor):
         msg = "Permit submitted"
     finally:
         return succeeded, msg
+
+
+def _format_visitor(db_visitor):
+    first, last = db_visitor["fullName"].split(" ", 1)
+    return {
+        "visitor-first-name": first,
+        "visitor-last-name": last,
+        "visitor-phone": db_visitor["phone"],
+        "visitor-email": db_visitor["email"],
+        "visitor-address": db_visitor["address"],
+        "visitor-apt-number": db_visitor["unit"],
+        "visitor-city": db_visitor["city"],
+        "visitor-zip": db_visitor["zip"],
+        "visitor-color": db_visitor["vehicleColor"],
+        "visitor-year": db_visitor["vehicleYear"],
+        "visitor-make": db_visitor["vehicleMake"],
+        "visitor-model": db_visitor["vehicleModel"],
+        "visitor-state-of-issuance": db_visitor["vehicleState"],
+        "visitor-license-plate-number": re.sub(" -", "", db_visitor["vehiclePlate"]),
+    }
+
+
+def _format_resident(db_resident):
+    first, last = db_resident["fullName"].split(" ", 1)
+    return {
+        "property-name": db_resident["property"],
+        "first-name-of-resident": first,
+        "last-name-of-resident": last,
+        "resident-address": db_resident["address"],
+        "resident-apartment": db_resident["unit"],
+        "resident-city": db_resident["city"],
+        "resident-state": db_resident["state"],
+        "resident-zip": db_resident["zip"],
+    }
 
 
 def _fill_form_inputs(driver, inputs):

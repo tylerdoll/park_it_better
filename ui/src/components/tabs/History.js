@@ -16,9 +16,7 @@ const renderHistory = (history) => {
             </Heading>
             <List spacing={2} fontSize="2xl">
               {day.visitors.map((visitor, i) => (
-                <ListItem key={i}>
-                  {`${visitor["visitor-first-name"]} ${visitor["visitor-last-name"]}`}
-                </ListItem>
+                <ListItem key={i}>{visitor["fullName"]}</ListItem>
               ))}
             </List>
           </div>

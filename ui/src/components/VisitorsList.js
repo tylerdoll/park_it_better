@@ -14,7 +14,7 @@ const VisitorsList = (props) => {
 
   if (allVisitors && allVisitors.length) {
     return allVisitors.map((v, i) => {
-      const key = `${v["visitor-first-name"]} ${v["visitor-last-name"]}`;
+      const key = v["fullName"];
 
       return (
         <Visitor
