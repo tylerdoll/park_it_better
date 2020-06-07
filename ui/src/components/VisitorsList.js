@@ -1,6 +1,12 @@
 import React from "react";
+import { connect } from "react-redux";
+
+import { Button, Text, Heading, Flex, Box } from "@chakra-ui/core";
+import { FaPoo } from "react-icons/fa";
 
 import Visitor from "../components/Visitor";
+
+import { setTabIndex } from "../data/actions/app";
 
 const VisitorsList = (props) => {
   const {
@@ -10,6 +16,7 @@ const VisitorsList = (props) => {
     invalidVisitors,
     onVisitorEditClick,
     onVisitorDeleteClick,
+    dispatchSetTabIndex,
   } = props;
 
   if (allVisitors && allVisitors.length) {
@@ -30,8 +37,27 @@ const VisitorsList = (props) => {
       );
     });
   } else {
-    return "No visitors found";
+    return (
+      <Flex direction="column" alignItems="center" justifyContent="center">
+        <Heading as="h1" s="lg" mt={24}>
+          Oh, poop
+        </Heading>
+        <Text textAlign="center" mt={4}>
+          {
+            "It looks like you haven't added any visitors yet. Tap below to add a visitor."
+          }
+        </Text>
+        <Button onClick={() => dispatchSetTabIndex(1)} mt={6}>
+          Add a Visitor
+        </Button>
+        <Box as={FaPoo} size={48} color="gray.700" mt={12} />
+      </Flex>
+    );
   }
 };
 
-export default VisitorsList;
+const mapDispatchToProps = (dispatch) => ({
+  dispatchSetTabIndex: (index) => dispatch(setTabIndex(index)),
+});
+
+export default connect(null, mapDispatchToProps)(VisitorsList);
