@@ -1,5 +1,5 @@
 import { get, post, put, del } from "../../API";
-import { setTabIndex } from "./app";
+import { setTabIndex, showToasts } from "./app";
 import { fetchHistory } from "./history";
 
 export const TOGGLE_VISITOR_FOR_SUBMIT = "TOGGLE_VISITOR_FOR_SUBMIT";
@@ -60,12 +60,6 @@ export const clearVisitorsToSubmit = () => ({
   type: CLEAR_VISITORS_TO_SUBMIT,
 });
 
-export const SHOW_TOASTS = "SHOW_TOASTS";
-export const showToasts = (results) => ({
-  type: SHOW_TOASTS,
-  payload: { results },
-});
-
 export const MARK_INVALID_VISITORS = "MARK_INVALID_VISITORS";
 export const markInvalidVisitors = (results) => ({
   type: MARK_INVALID_VISITORS,
@@ -82,12 +76,6 @@ export const SET_VISITOR_FORM_INITIAL_VALUES =
 export const setVisitorFormInitialValues = (values) => ({
   type: SET_VISITOR_FORM_INITIAL_VALUES,
   payload: { values },
-});
-
-export const REMOVE_TOAST = "REMOVE_TOAST";
-export const removeToast = (id) => ({
-  type: REMOVE_TOAST,
-  payload: { id },
 });
 
 export const OPEN_DELETE_VISITOR_DIALOG = "OPEN_DELETE_VISITOR_DIALOG";
@@ -108,9 +96,27 @@ export const saveVisitor = (visitor, onComplete) => (dispatch) => {
     dispatch(savedVisitor());
     dispatch(setTabIndex(0));
     dispatch(fetchVisitors());
+
+    const toasts = [
+      {
+        status: "success",
+        title: "Success",
+        description: "Succesfully saved visitor",
+      },
+    ];
+    dispatch(showToasts(toasts));
   };
 
-  const onError = (e) => console.error("Could not save visitor", e);
+  const onError = (e) => {
+    const toasts = [
+      {
+        status: "error",
+        title: "jrror",
+        description: `Could not save visitor ${e}`,
+      },
+    ];
+    dispatch(showToasts(toasts));
+  };
 
   if (visitor["_id"]) {
     put("/visitor/" + visitor["_id"], visitor, onSuccess, onError).then(
@@ -143,8 +149,25 @@ export const deleteVisitor = (id) => (dispatch) => {
     (resp) => {
       dispatch(closeDeleteVisitorDialog());
       dispatch(fetchVisitors());
+
+      const toasts = [
+        {
+          status: "success",
+          title: "Success",
+          description: "Succesfully deleted visitor",
+        },
+      ];
+      dispatch(showToasts(toasts));
     },
     (e) => {
+      const toasts = [
+        {
+          status: "error",
+          title: "Error",
+          description: `Could not delete visitor ${e}`,
+        },
+      ];
+      dispatch(showToasts(toasts));
       throw Error(`Could not delete visitor ${e}`);
     }
   );
@@ -162,8 +185,19 @@ export const postVisitorsForPermit = (visitors) => (dispatch) => {
   ).then((results) => {
     dispatch(postedVisitorsForPermit());
     dispatch(clearVisitorsToSubmit());
-    dispatch(showToasts(results));
     dispatch(markInvalidVisitors(results));
     dispatch(fetchHistory());
+
+    const toasts = results.map((result) => {
+      const visitor = result.visitor;
+      return {
+        status: visitor.succeeded ? "success" : "error",
+        title: visitor.succeeded
+          ? `Successfully submit ${visitor["fullName"]}`
+          : `Failed to submit ${visitor["fullName"]}`,
+        description: result.response,
+      };
+    });
+    dispatch(showToasts(toasts));
   });
 };

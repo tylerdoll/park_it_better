@@ -1,4 +1,5 @@
 import { get, post } from "../../API";
+import { showToasts } from "./app";
 
 export const REQUEST_RESIDENT = "REQUEST_RESIDENT";
 export const requestResident = () => ({
@@ -29,8 +30,25 @@ export const saveResident = (resident, onComplete) => (dispatch) => {
     (resp) => {
       dispatch(savedResident());
       dispatch(fetchResident());
+      const toasts = [
+        {
+          status: "success",
+          title: "Success",
+          description: "Succesfully saved resident",
+        },
+      ];
+      dispatch(showToasts(toasts));
     },
-    (e) => console.error("Could not save resident", e)
+    (e) => {
+      const toasts = [
+        {
+          status: "error",
+          title: "Error",
+          description: `Could not save resident ${e}`,
+        },
+      ];
+      dispatch(showToasts(toasts));
+    }
   ).then(onComplete);
 };
 

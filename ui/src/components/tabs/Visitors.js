@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
@@ -6,7 +6,7 @@ import { CSSTransition } from "react-transition-group";
 import "../../styles.css";
 
 import { useDisclosure } from "@chakra-ui/core";
-import { Box, Flex, Heading, useToast } from "@chakra-ui/core";
+import { Flex, Heading } from "@chakra-ui/core";
 
 import VisitorsList from "../VisitorsList";
 import FormModal from "../modals/Form";
@@ -16,7 +16,6 @@ import {
   postVisitorsForPermit,
   setVisitorFormInitialValues,
   toggleForSubmit,
-  removeToast,
   openDeleteVisitorDialog,
 } from "../../data/actions/visitors";
 
@@ -30,9 +29,7 @@ const VisitorsTab = (props) => {
     invalidVisitors,
     visitorsToSubmit,
     postingForPermit,
-    toasts,
     dispatchPostVisitorsForPermit,
-    dispatchRemoveToast,
     dispatchSetVisitorFormInitialValues,
     dispatchToggleForSubmit,
     dispatchOpenDeleteVisitorDialog,
@@ -40,21 +37,6 @@ const VisitorsTab = (props) => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
-
-  const toast = useToast();
-  useEffect(() => {
-    if (toasts.length === 0) return;
-
-    const t = toasts.pop();
-    toast({
-      title: t.title,
-      description: t.description,
-      status: t.status,
-      isClosable: true,
-      duration: 5000, // ms
-    });
-    dispatchRemoveToast(t.id);
-  });
 
   const handleDeleteVisitorClick = (id) => dispatchOpenDeleteVisitorDialog(id);
   const handleEditVisitorClick = (visitor) => {
@@ -127,12 +109,10 @@ VisitorsTab.propTypes = {
   invalidVisitors: PropTypes.array.isRequired,
   visitorsToSubmit: PropTypes.array.isRequired,
   postingForPermit: PropTypes.bool.isRequired,
-  toasts: PropTypes.array.isRequired,
   dispatchToggleForSubmit: PropTypes.func.isRequired,
   dispatchPostVisitorsForPermit: PropTypes.func.isRequired,
   dispatchSetVisitorFormInitialValues: PropTypes.func.isRequired,
   dispatchOpenDeleteVisitorDialog: PropTypes.func.isRequired,
-  dispatchRemoveToast: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -140,7 +120,6 @@ const mapStateToProps = (state) => ({
   invalidVisitors: state.visitors.invalidVisitors,
   visitorsToSubmit: state.visitors.visitorsToSubmit,
   postingForPermit: state.visitors.postingForPermit,
-  toasts: state.visitors.toasts,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -150,7 +129,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     dispatch(postVisitorsForPermit(visitors)),
   dispatchOpenDeleteVisitorDialog: (id) =>
     dispatch(openDeleteVisitorDialog(id)),
-  dispatchRemoveToast: (id) => dispatch(removeToast(id)),
   dispatchToggleForSubmit: (id) => dispatch(toggleForSubmit(id)),
 });
 

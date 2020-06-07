@@ -1,5 +1,3 @@
-import { v4 as uuid4 } from "uuid";
-
 import {
   CLEAR_SUBMISSION,
   RECEIVE_VISITORS,
@@ -9,9 +7,7 @@ import {
   POSTING_VISITORS_FOR_PERMIT,
   POSTED_VISITORS_FOR_PERMIT,
   SET_VISITOR_FORM_INITIAL_VALUES,
-  REMOVE_TOAST,
   CLEAR_VISITORS_TO_SUBMIT,
-  SHOW_TOASTS,
   MARK_INVALID_VISITORS,
   OPEN_DELETE_VISITOR_DIALOG,
   CLOSE_DELETE_VISITOR_DIALOG,
@@ -21,7 +17,6 @@ const initialState = {
   allVisitors: [],
   visitorsToSubmit: [],
   invalidVisitors: [],
-  toasts: [],
   saving: false,
   postingForPermit: false,
   deleteVisitorDialog: {
@@ -82,27 +77,6 @@ export default function (state = initialState, action) {
       };
     }
 
-    case SHOW_TOASTS: {
-      const { results } = action.payload;
-
-      const toasts = results.map((result) => {
-        const { visitor } = result;
-        const successTitle = `Successfully submit ${visitor["fullName"]}`;
-        const failTitle = `Failed to submit ${visitor["fullName"]}`;
-        return {
-          id: uuid4(),
-          title: result.succeeded ? successTitle : failTitle,
-          description: result.response,
-          status: result.succeeded ? "success" : "error",
-        };
-      });
-
-      return {
-        ...state,
-        toasts,
-      };
-    }
-
     case MARK_INVALID_VISITORS: {
       const { results } = action.payload;
 
@@ -155,15 +129,6 @@ export default function (state = initialState, action) {
         ...state,
         visitorFormInitialValues: values,
       };
-
-    case REMOVE_TOAST: {
-      const { id } = action.payload;
-      const toasts = state.toasts.filter((toast) => toast.id !== id);
-      return {
-        ...state,
-        toasts,
-      };
-    }
 
     case OPEN_DELETE_VISITOR_DIALOG: {
       const { visitorId } = action.payload;

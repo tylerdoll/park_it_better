@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import { ThemeProvider, CSSReset, DarkMode } from "@chakra-ui/core";
 import { Tabs, TabList, TabPanels, TabPanel } from "@chakra-ui/core";
+import { useToast } from "@chakra-ui/core";
 
 import { FaList, FaPlus, FaHome, FaHistory } from "react-icons/fa";
 
@@ -13,81 +13,89 @@ import NewVisitorTab from "./components/tabs/NewVisitor";
 import ResidentTab from "./components/tabs/Resident";
 import HistoryTab from "./components/tabs/History";
 
-import { setTabIndex } from "./data/actions/app";
+import { setTabIndex, removeToast } from "./data/actions/app";
 
 const App = (props) => {
-  const { tabIndex, dispatchSetTabIndex } = props;
+  const { tabIndex, dispatchSetTabIndex, toasts, dispatchRemoveToast } = props;
 
   const handleTabsChange = (index) => dispatchSetTabIndex(index);
 
-  return (
-    <ThemeProvider>
-      <DarkMode>
-        <CSSReset />
-        <Tabs
-          variant="soft-rounded"
-          align="center"
-          height="-webkit-fill-available"
-          display="flex"
-          flexDirection="column"
-          flexGrow={1}
-          index={tabIndex}
-          onChange={handleTabsChange}
-        >
-          <TabList
-            bg="gray.700"
-            height="64px"
-            display="flex"
-            position="fixed"
-            p={4}
-            top={0}
-            left={0}
-            right={0}
-            zIndex={100}
-          >
-            <IconTab label="Visitors" icon={FaList} />
-            <IconTab label="Add visitor" icon={FaPlus} />
-            <IconTab label="Resident" icon={FaHome} />
-            <IconTab label="History" icon={FaHistory} />
-          </TabList>
+  const toast = useToast();
+  useEffect(() => {
+    if (toasts.length === 0) return;
 
-          <TabPanels
-            flex={1}
-            display="flex"
-            flexDirection="column"
-            p={4}
-            pt="80px"
-          >
-            <TabPanel py={4}>
-              <VisitorsTab />
-            </TabPanel>
-            <TabPanel py={4}>
-              <NewVisitorTab />
-            </TabPanel>
-            <TabPanel py={4}>
-              <ResidentTab />
-            </TabPanel>
-            <TabPanel py={4}>
-              <HistoryTab />
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
-      </DarkMode>
-    </ThemeProvider>
+    const t = toasts.pop();
+    toast({
+      title: t.title,
+      description: t.description,
+      status: t.status,
+      isClosable: true,
+      duration: 5000, // ms
+    });
+    dispatchRemoveToast(t.id);
+  });
+
+  return (
+    <Tabs
+      variant="soft-rounded"
+      align="center"
+      height="-webkit-fill-available"
+      display="flex"
+      flexDirection="column"
+      flexGrow={1}
+      index={tabIndex}
+      onChange={handleTabsChange}
+    >
+      <TabList
+        bg="gray.700"
+        height="64px"
+        display="flex"
+        position="fixed"
+        p={4}
+        top={0}
+        left={0}
+        right={0}
+        zIndex={100}
+      >
+        <IconTab label="Visitors" icon={FaList} />
+        <IconTab label="Add visitor" icon={FaPlus} />
+        <IconTab label="Resident" icon={FaHome} />
+        <IconTab label="History" icon={FaHistory} />
+      </TabList>
+
+      <TabPanels flex={1} display="flex" flexDirection="column" p={4} pt="80px">
+        <TabPanel py={4}>
+          <VisitorsTab />
+        </TabPanel>
+        <TabPanel py={4}>
+          <NewVisitorTab />
+        </TabPanel>
+        <TabPanel py={4}>
+          <ResidentTab />
+        </TabPanel>
+        <TabPanel py={4}>
+          <HistoryTab />
+        </TabPanel>
+      </TabPanels>
+    </Tabs>
   );
 };
 
 App.propTypes = {
   tabIndex: PropTypes.number.isRequired,
+  toasts: PropTypes.array.isRequired,
   dispatchSetTabIndex: PropTypes.func.isRequired,
+  dispatchRemoveToast: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   tabIndex: state.app.tabIndex,
+  toasts: state.app.toasts,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   dispatchSetTabIndex: (index) => dispatch(setTabIndex(index)),
+  dispatchRemoveToast: (id) => dispatch(removeToast(id)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
