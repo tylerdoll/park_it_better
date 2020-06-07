@@ -51,7 +51,7 @@ const VisitorsTab = (props) => {
       description: t.description,
       status: t.status,
       isClosable: true,
-      duration: 500000, // ms
+      duration: 5000, // ms
     });
     dispatchRemoveToast(t.id);
   });
