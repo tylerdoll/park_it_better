@@ -6,9 +6,7 @@ import { CSSTransition } from "react-transition-group";
 import "../../styles.css";
 
 import { useDisclosure } from "@chakra-ui/core";
-import { Flex } from "@chakra-ui/core";
-import { Heading } from "@chakra-ui/core";
-import { useToast } from "@chakra-ui/core";
+import { Box, Flex, Heading, useToast } from "@chakra-ui/core";
 
 import VisitorsList from "../VisitorsList";
 import FormModal from "../modals/Form";
@@ -53,7 +51,7 @@ const VisitorsTab = (props) => {
       description: t.description,
       status: t.status,
       isClosable: true,
-      duration: 5000, // ms
+      duration: 500000, // ms
     });
     dispatchRemoveToast(t.id);
   });
@@ -83,22 +81,29 @@ const VisitorsTab = (props) => {
         classNames="fade-up"
         unmountOnExit
       >
-        <RoundedButton
-          mt="auto"
-          mx="auto"
-          mb={4}
-          size="lg"
+        <Flex
+          direction="column"
+          alignItems="center"
           position="fixed"
-          bottom="80px"
-          alignSelf="center"
-          loadingText="Submitting..."
-          bg="gray.600"
-          onClick={handleSubmitVisitorsForPermitClick}
-          isLoading={postingForPermit}
-          _disabled={{ opacity: 1.0, bg: "gray.700", color: "gray.600" }}
+          bottom="0"
+          left="0"
+          right="0"
+          my="0"
+          mx="auto"
+          p={4}
         >
-          Submit for permit
-        </RoundedButton>
+          <RoundedButton
+            size="lg"
+            alignSelf="center"
+            loadingText="Submitting..."
+            bg="gray.600"
+            onClick={handleSubmitVisitorsForPermitClick}
+            isLoading={postingForPermit}
+            _disabled={{ opacity: 1.0, bg: "gray.700", color: "gray.600" }}
+          >
+            Submit for permit
+          </RoundedButton>
+        </Flex>
       </CSSTransition>
 
       <VisitorsList
