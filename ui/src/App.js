@@ -57,8 +57,8 @@ const App = (props) => {
       >
         <IconTab label="Visitors" icon={FaList} />
         <IconTab label="Add visitor" icon={FaPlus} />
-        <IconTab label="Resident" icon={FaHome} />
         <IconTab label="History" icon={FaHistory} />
+        <IconTab label="Resident" icon={FaHome} />
       </TabList>
 
       <TabPanels flex={1} display="flex" flexDirection="column" p={4} pt="80px">
@@ -69,10 +69,10 @@ const App = (props) => {
           <NewVisitorTab />
         </TabPanel>
         <TabPanel py={4}>
-          <ResidentTab />
+          <HistoryTab />
         </TabPanel>
         <TabPanel py={4}>
-          <HistoryTab />
+          <ResidentTab />
         </TabPanel>
       </TabPanels>
     </Tabs>
