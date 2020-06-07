@@ -45,10 +45,10 @@ const App = (props) => {
             right={0}
             zIndex={100}
           >
-            <IconTab label="Visitors" icon={FaList} color="green.200" />
-            <IconTab label="Add visitor" icon={FaPlus} color="blue.200" />
-            <IconTab label="Resident" icon={FaHome} color="red.200" />
-            <IconTab label="History" icon={FaHistory} color="yellow.200" />
+            <IconTab label="Visitors" icon={FaList} />
+            <IconTab label="Add visitor" icon={FaPlus} />
+            <IconTab label="Resident" icon={FaHome} />
+            <IconTab label="History" icon={FaHistory} />
           </TabList>
 
           <TabPanels
