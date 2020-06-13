@@ -27,12 +27,12 @@ def post():
         fields_to_submit.pop("_id")
 
         if current_app.config["ENV"] == "development":
-            response = _fake_submit(visitor)
+            succeeded, msg = _fake_submit(visitor)
         else:
             logging.info(f"Submitting parking info for {visitor}")
             succeeded, msg = submit_visitor_info(driver, resident, fields_to_submit)
-            response = _create_response(visitor, succeeded, msg)
 
+        response = _create_response(visitor, succeeded, msg)
         responses.append(response)
         logging.debug(response)
 
@@ -58,7 +58,7 @@ def _fake_submit(visitor):
     succeeded = random.randint(0, 1)
     if succeeded:
         logging.warning(f"Faking successful submit for {visitor}")
-        return _create_response(visitor, True, "FAKE: Succesfully submitted")
+        return True, "FAKE: Succesfully submitted"
     else:
         logging.warning(f"Faking fail submit for {visitor}")
-        return _create_response(visitor, False, "FAKE: Error while submitting")
+        return False, "FAKE: Error while submitting"

@@ -189,13 +189,14 @@ export const postVisitorsForPermit = (visitors) => (dispatch) => {
     dispatch(fetchHistory());
 
     const toasts = results.map((result) => {
-      const visitor = result.visitor;
+      const { succeeded, visitor, response } = result;
+      debugger;
       return {
-        status: visitor.succeeded ? "success" : "error",
-        title: visitor.succeeded
+        status: succeeded ? "success" : "error",
+        title: succeeded
           ? `Successfully submit ${visitor["fullName"]}`
           : `Failed to submit ${visitor["fullName"]}`,
-        description: result.response,
+        description: response,
       };
     });
     dispatch(showToasts(toasts));
