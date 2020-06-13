@@ -34,8 +34,8 @@ def create_driver():
 
 
 def submit_visitor_info(driver, resident, visitor):
-    resident = _format_visitor(resident)
-    visitor = _format_resident(visitor)
+    resident = _format_resident(resident)
+    visitor = _format_visitor(visitor)
 
     driver.get(_FORM_URL)
     try:
